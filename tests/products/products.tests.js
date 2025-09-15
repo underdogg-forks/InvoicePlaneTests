@@ -1,60 +1,56 @@
-const TestRunner = require('../testrunner');
+const { page, expect } = require('jest-playwright-preset');
+const { assertPageLoads, assertFormSubmit, assertDestroy } = require('../test-helpers');
 
-const tests = {
-  async it_can_view_families_index(page, runner) {
-    const route = runner.getRoute('products', '/families/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_units_index(page, runner) {
-    const route = runner.getRoute('products', '/units/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_products_index(page, runner) {
-    const route = runner.getRoute('products', '/products/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_create_a_family(page, runner) {
-    const route = runner.getRoute('products', '/families/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_family(page, runner) {
-    const route = runner.getRoute('products', '/families/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_create_a_unit(page, runner) {
-    const route = runner.getRoute('products', '/units/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_unit(page, runner) {
-    const route = runner.getRoute('products', '/units/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_create_a_product(page, runner) {
-    const route = runner.getRoute('products', '/products/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_product(page, runner) {
-    const route = runner.getRoute('products', '/products/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_delete_a_family(page, runner) {
-    const route = runner.getRoute('products', '/families/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_delete_a_unit(page, runner) {
-    const route = runner.getRoute('products', '/units/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_delete_a_product(page, runner) {
-    const route = runner.getRoute('products', '/products/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  }
-};
+describe('Products Module', () => {
 
-module.exports = { tests };
+  // Index Routes
+  test('it can view families index', async () => {
+    await assertPageLoads(page, '/families/index');
+  });
+  
+  test('it can view units index', async () => {
+    await assertPageLoads(page, '/units/index');
+  });
+
+  test('it can view products index', async () => {
+    await assertPageLoads(page, '/products/index');
+  });
+
+  // Form Routes
+  test('it can create a new family', async () => {
+    await assertFormSubmit(page, '/families/form', 'products');
+  });
+
+  test('it can edit an existing family', async () => {
+    await assertFormSubmit(page, '/families/form/1', 'products');
+  });
+
+  test('it can create a new unit', async () => {
+    await assertFormSubmit(page, '/units/form', 'products');
+  });
+
+  test('it can edit an existing unit', async () => {
+    await assertFormSubmit(page, '/units/form/1', 'products');
+  });
+  
+  test('it can create a new product', async () => {
+    await assertFormSubmit(page, '/products/form', 'products');
+  });
+
+  test('it can edit an existing product', async () => {
+    await assertFormSubmit(page, '/products/form/1', 'products');
+  });
+  
+  // Destroy Routes
+  test('it can delete a family', async () => {
+    await assertDestroy(page, '/families/delete/1');
+  });
+
+  test('it can delete a unit', async () => {
+    await assertDestroy(page, '/units/delete/1');
+  });
+
+  test('it can delete a product', async () => {
+    await assertDestroy(page, '/products/delete/1');
+  });
+});
