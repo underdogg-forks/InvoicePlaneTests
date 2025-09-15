@@ -1,6 +1,5 @@
 /**
- * @fileoverview Test suite for the Quotes module, including modal form and deletion message.
- * @author FREE AI agent in the GitHub Copilot plugin of phpstorm
+ * Test suite for the Quotes module, including modal form and deletion message.
  */
 
 const { page, expect } = require('jest-playwright-preset');
