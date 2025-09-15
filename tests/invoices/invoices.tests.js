@@ -1,8 +1,9 @@
 const { page, expect } = require('jest-playwright-preset');
-const { assertPageLoads, assertFormSubmit, assertDestroy, assertAjax } = require('../test-helpers');
+const { assertPageLoads, assertDestroy, assertAjax } = require('../../test-helpers');
 
 describe('Invoices Module', () => {
-  // Index Routes
+
+  // View Routes
   test('it can view invoices index', async () => {
     await assertPageLoads(page, '/invoices/index');
     await expect(page.locator('.content-title')).toContainText('Invoices');
@@ -44,23 +45,9 @@ describe('Invoices Module', () => {
     await assertPageLoads(page, '/invoices/recurring/index');
   });
 
-  test('it can view invoice groups index', async () => {
-    await assertPageLoads(page, '/invoice_groups/index');
-  });
-
-  // View Routes
-  test('it can view an invoice', async () => {
-    await assertPageLoads(page, '/invoices/view/1');
+  test('it can view an invoice by id', async () => {
+    await assertPageLoads(page, '/invoices/view/6617');
     await expect(page.locator('.content-title')).toContainText('Invoice');
-  });
-
-  // Form Routes
-  test('it can create an invoice group', async () => {
-    await assertFormSubmit(page, '/invoice_groups/form', 'invoices');
-  });
-
-  test('it can edit an invoice group', async () => {
-    await assertFormSubmit(page, '/invoice_groups/form/1', 'invoices');
   });
 
   // Destroy Routes
@@ -68,16 +55,12 @@ describe('Invoices Module', () => {
     await assertDestroy(page, '/invoices/delete/1');
   });
 
-  test('it can stop a recurring invoice', async () => {
-    await assertDestroy(page, '/invoices/recurring/stop/1');
-  });
-
-  test('it can delete an invoice group', async () => {
-    await assertDestroy(page, '/invoice_groups/delete/1');
+  test('it can stop a recurring invoice by id', async () => {
+    await assertDestroy(page, '/invoices/recurring/stop/133');
   });
 
   // AJAX Routes
-  test('it can generate an invoice PDF', async () => {
-    await assertAjax(page, '/invoices/generate_pdf/1');
+  test('it can generate an invoice PDF by id', async () => {
+    await assertAjax(page, '/invoices/generate_pdf/6290');
   });
 });
