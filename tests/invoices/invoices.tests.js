@@ -1,7 +1,19 @@
 /**
  * @fileoverview Test suite for the Invoices module.
- * This file contains tests for all `invoices` routes, including views, forms, and deletions.
- * Payloads are explicitly documented in JSDoc blocks for relevant tests.
+ * This file contains tests for all `invoices` routes, including views, forms, deletions, recurring, and AJAX actions.
+ *
+ * Covered routes:
+ *   - /invoices/index, /invoices/archive, /invoices/status/all, /invoices/status/draft, /invoices/status/overdue, /invoices/status/paid, /invoices/status/sent, /invoices/status/viewed
+ *   - /invoices/recurring, /invoices/recurring/index
+ *   - /invoice_groups/index
+ *   - /invoices/view/{id}
+ *   - /invoices/form, /invoices/form/{id}
+ *   - /invoices/delete/{id}
+ *   - /invoice_groups/form, /invoice_groups/form/{id}, /invoice_groups/delete/{id}
+ *
+ * Pending (incomplete) tests for:
+ *   - /invoices/recurring/stop/{id}
+ *   - /invoices/generate_pdf/{id} (AJAX)
  */
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax } = require('../../test-helpers');

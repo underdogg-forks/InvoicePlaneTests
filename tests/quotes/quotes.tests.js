@@ -1,7 +1,16 @@
 /**
  * @fileoverview Test suite for the Quotes module.
- * This file contains tests for all `quotes` routes, including views, forms, and deletions.
- * Payloads are explicitly documented in JSDoc blocks for relevant tests.
+ * This file contains tests for all `quotes` routes, including views, forms, deletions, and AJAX actions.
+ *
+ * Covered routes:
+ *   - /quotes/index
+ *   - /quotes/view/{id}
+ *   - /quotes/form, /quotes/form/{id}
+ *   - /quotes/delete/{id}, /quotes/cancel/{id}
+ *   - /quotes/generate_pdf/{id} (AJAX)
+ *
+ * Pending (incomplete) tests for:
+ *   - /quotes/status/all, /quotes/status/approved, /quotes/status/canceled, /quotes/status/draft, /quotes/status/rejected, /quotes/status/sent, /quotes/status/viewed
  */
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax } = require('../../test-helpers');
@@ -12,6 +21,29 @@ describe('Quotes Module', () => {
     await assertPageLoads(page, '/quotes/index');
     await expect(page.locator('.content-title')).toContainText('Quotes');
   });
+
+    // --- Incomplete tests for missing status routes ---
+    test.skip('it can view all quotes (status=all)', async () => {
+        // TODO: Implement test for /quotes/status/all
+    });
+    test.skip('it can view approved quotes', async () => {
+        // TODO: Implement test for /quotes/status/approved
+    });
+    test.skip('it can view canceled quotes', async () => {
+        // TODO: Implement test for /quotes/status/canceled
+    });
+    test.skip('it can view draft quotes', async () => {
+        // TODO: Implement test for /quotes/status/draft
+    });
+    test.skip('it can view rejected quotes', async () => {
+        // TODO: Implement test for /quotes/status/rejected
+    });
+    test.skip('it can view sent quotes', async () => {
+        // TODO: Implement test for /quotes/status/sent
+    });
+    test.skip('it can view viewed quotes', async () => {
+        // TODO: Implement test for /quotes/status/viewed
+    });
 
   // Route: /quotes/view/{id}
   test('it can view a specific quote', async () => {
@@ -82,7 +114,7 @@ describe('Quotes Module', () => {
 
   // Route: /quotes/cancel/{id}
   test('it can cancel a quote', async () => {
-    await assertDestroy(page, '/quotes/cancel/2172');
+    await assertAjax(page, '/quotes/cancel/2172');
   });
 
   // Route: /quotes/ajax/generate_pdf/{id}

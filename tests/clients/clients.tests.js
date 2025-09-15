@@ -173,27 +173,4 @@ describe('Clients Module', () => {
     };
     await submitFormWithPayload(page, '/clients/form/956', 'client', editClientPayload);
   });
-
-  // --- Incomplete tests for missing routes ---
-  test.skip('it can create a new client (form)', async () => {
-    // TODO: Implement test for /clients/form
-  });
-  test.skip('it can edit a client by id (form)', async () => {
-    // TODO: Implement test for /clients/form/{id}
-  });
-  test.skip('it can delete a client', async () => {
-    // TODO: Implement test for /clients/delete/{id}
-  });
-  test.skip('it can remove a client', async () => {
-    // TODO: Implement test for /clients/remove/{id}
-  });
-  test.skip('it can create a new user client (form)', async () => {
-    // TODO: Implement test for /user_clients/form
-  });
-  test.skip('it can edit a user client by id (form)', async () => {
-    // TODO: Implement test for /user_clients/form/{id}
-  });
-  test.skip('it can delete a user client', async () => {
-    // TODO: Implement test for /user_clients/delete/{id}
-  });
 });
