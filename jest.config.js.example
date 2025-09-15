@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: 'jest-playwright-preset',
-  testMatch: ['**/tests/**/*.test.js'],
+  testMatch: ['**/tests/**/*.tests.js'],
   setupFilesAfterEnv: ['<rootDir>/setup.js'],
   verbose: true,
   bail: false,
@@ -8,7 +8,7 @@ module.exports = {
   globals: {
     baseUrl: 'http://localhost.test',
   },
-  testTimeout: 60000,
+  testTimeout: 1000,
   preset: 'jest-playwright-preset',
   testRunner: 'jest-circus/runner',
   reporters: ['default'],
