@@ -1,26 +1,26 @@
-const TestRunner = require('../testrunner');
+const { page, expect } = require('jest-playwright-preset');
+const { assertPageLoads } = require('../../test-helpers');
 
-const tests = {
-  async it_can_view_invoice_aging_report(page, runner) {
-    const route = runner.getRoute('core', '/reports/invoice_aging');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_invoices_per_client_report(page, runner) {
-    const route = runner.getRoute('core', '/reports/invoices_per_client');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_payment_history_report(page, runner) {
-    const route = runner.getRoute('core', '/reports/payment_history');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_sales_by_client_report(page, runner) {
-    const route = runner.getRoute('core', '/reports/sales_by_client');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_sales_by_year_report(page, runner) {
-    const route = runner.getRoute('core', '/reports/sales_by_year');
-    await runner.handleViewOrIndex(page, route);
-  }
-};
+describe('Reports Module', () => {
 
-module.exports = { tests };
+  // View Routes
+  test('it can view reports invoice aging', async () => {
+    await assertPageLoads(page, '/reports/invoice_aging');
+  });
+
+  test('it can view reports invoices per client', async () => {
+    await assertPageLoads(page, '/reports/invoices_per_client');
+  });
+
+  test('it can view reports payment history', async () => {
+    await assertPageLoads(page, '/reports/payment_history');
+  });
+
+  test('it can view reports sales by client', async () => {
+    await assertPageLoads(page, '/reports/sales_by_client');
+  });
+
+  test('it can view reports sales by year', async () => {
+    await assertPageLoads(page, '/reports/sales_by_year');
+  });
+});
