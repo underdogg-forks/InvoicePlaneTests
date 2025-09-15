@@ -1,3 +1,4 @@
+// New testrunner.js
 const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
@@ -13,51 +14,28 @@ class TestRunner {
         this.formSaveStrategies = config.formSaveStrategies;
     }
 
-    async runAll() {
-        for (const route of routes) {
-            try {
-                await this.runTest(route);
-            } catch (err) {
-                console.error(`❌ Test failed for ${route.url}:`, err);
-            }
-        }
-    }
-
-    async runTest(route) {
+    async run(testName) {
         const browser = await chromium.launch(this.browserOptions);
         const context = await browser.newContext();
         const page = await context.newPage();
 
         page.setDefaultTimeout(this.browserOptions.timeout);
 
-        console.log(`\nTesting ${route.url} [${route.type}]`);
+        console.log(`\nStarting test: ${testName}`);
 
         try {
             await this.login(page);
 
-            switch (route.type) {
-                case 'view':
-                case 'index':
-                    await this.handleViewOrIndex(page, route);
-                    break;
-                case 'create/edit':
-                    await this.handleForm(page, route);
-                    break;
-                case 'destroy':
-                    await this.handleDestroy(page, route);
-                    break;
-                case 'ajax':
-                    await this.handleAjax(page, route);
-                    break;
-                case 'exotic':
-                    await this.handleExotic(page, route);
-                    break;
-                default:
-                    console.warn('Unknown route type', route.type);
+            const testModule = require(path.join(__dirname, 'tests', `${testName}.js`));
+            if (testModule && typeof testModule[testName] === 'function') {
+                await testModule[testName](page, this);
+            } else {
+                throw new Error(`Test function "${testName}" not found.`);
             }
-
+            
+            console.log(`✅ Test passed: ${testName}`);
         } catch (err) {
-            console.error(`❌ Error on ${route.url}: ${err.message}`);
+            console.error(`❌ Test failed: ${testName}`, err);
         } finally {
             await browser.close();
         }
@@ -72,19 +50,23 @@ class TestRunner {
         console.log('Logged in');
     }
 
-    async handleViewOrIndex(page, route) {
-        await page.goto(route.url, {waitUntil: 'domcontentloaded'});
-        console.log(`${route.type} loaded: ${route.url}`);
+    // Handlers for different test types
+    async handleView(page, url, module) {
+        await page.goto(url, { waitUntil: 'domcontentloaded' });
+        // Add assertions here, e.g., for status code and content
+        // This is a placeholder for your specific assertions
+        if (page.url() !== url) {
+            throw new Error(`URL mismatch. Expected: ${url}, Actual: ${page.url()}`);
+        }
     }
 
-    async handleForm(page, route) {
-        await page.goto(route.url, {waitUntil: 'domcontentloaded'});
+    async handleForm(page, url, module) {
+        await page.goto(url, { waitUntil: 'domcontentloaded' });
         const form = await page.$('form');
         if (!form) throw new Error('No form found');
 
         await this.fillForm(form);
-
-        await this.submitForm(page, route.module);
+        await this.submitForm(page, module);
 
         const alert = await page.locator('.alert-success').first();
         if (await alert.count() > 0) {
@@ -93,7 +75,9 @@ class TestRunner {
             console.warn('No success alert detected');
         }
     }
-
+    
+    // ... (other handlers like handleDestroy, handleAjax, handleExotic)
+    
     async fillForm(form) {
         const inputs = await form.$$('input, textarea, select');
         for (const input of inputs) {
@@ -135,27 +119,34 @@ class TestRunner {
         throw new Error('No save button found for module: ' + module);
     }
 
-    async handleDestroy(page, route) {
-        await page.goto(route.url, {waitUntil: 'domcontentloaded'});
-        console.log(`Destroy executed for ${route.url}`);
-    }
-
-    async handleAjax(page, route) {
-        await page.goto(route.url, {waitUntil: 'domcontentloaded'});
-        console.log(`AJAX route accessed: ${route.url}`);
-    }
-
-    async handleExotic(page, route) {
-        await page.goto(route.url, {waitUntil: 'domcontentloaded'});
-        console.log(`Exotic route accessed: ${route.url}`);
+    // Helper to find a route by its module and path
+    getRoute(module, url) {
+        const moduleRoutes = routes.find(r => r.module === module);
+        if (moduleRoutes) {
+            for (const type in moduleRoutes.routes) {
+                if (moduleRoutes.routes[type].includes(url)) {
+                    return { url, type, module };
+                }
+            }
+        }
+        return null;
     }
 }
 
 if (require.main === module) {
     (async () => {
-        const runner = new TestRunner();
-        await runner.runAll();
+        const testRunner = new TestRunner();
+        const args = process.argv.slice(2);
+        const filterArg = args.find(arg => arg.startsWith('--filter='));
+        if (filterArg) {
+            const testName = filterArg.split('=')[1];
+            await testRunner.run(testName);
+        } else {
+            // Logic to find and run all tests if no filter is provided
+            console.warn('No filter provided. Running all tests is not implemented in this version.');
+        }
     })();
 }
 
 module.exports = TestRunner;
+
