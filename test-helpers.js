@@ -1,5 +1,5 @@
 /**
- * A comprehensive suite of helper functions for InvoicePlane Jest tests.
+ * @fileoverview A comprehensive suite of helper functions for InvoicePlane Jest tests.
  * This file contains functions for navigating pages, submitting forms with specific payloads,
  * and asserting page content and API responses.
  */
@@ -27,6 +27,7 @@ function generateRandomString(length = 10) {
 /**
  * Processes a payload object and fills form fields accordingly.
  * It handles dynamic variables found in the payloads, such as $client_id or date functions.
+ * The variables are replaced with hardcoded test IDs and generated data.
  * @param {import('playwright').Page} page - The Playwright page object.
  * @param {object} payload - The form data payload from a JSON file.
  * @returns {Promise<void>}
@@ -38,13 +39,13 @@ async function processPayload(page, payload) {
         // Handle dynamic variables from the provided payloads
         if (typeof value === 'string') {
             if (value.includes('$date(')) {
-                // Dynamically generate a date string
+                // Dynamically generate a date string like '13:25:00'
                 const now = new Date();
                 const hours = String(now.getHours()).padStart(2, '0');
                 const minutes = String(now.getMinutes()).padStart(2, '0');
                 const seconds = String(now.getSeconds()).padStart(2, '0');
                 processedValue = `${hours}:${minutes}:${seconds}`;
-            } else if (value.includes('$client_id')) {
+            } else if (value.includes('$client_id') || value.includes('$create_invoice_client_id') || value.includes('$copy_invoice_client_id')) {
                 // Use a hardcoded client ID for testing
                 processedValue = '956';
             } else if (value.includes('$invoice_group_id')) {
@@ -78,8 +79,9 @@ async function processPayload(page, payload) {
             } else if (value.includes('$payment_id')) {
                 processedValue = '966';
             } else {
-                // Fill other text fields with a combination of static and random data
-                processedValue = `Test ${generateRandomString(5)} - ${processedValue.replace(/\$/g, '')}`;
+                // For all other variables, we can use "jibberish" as requested.
+                // We'll prepend 'Test' to make it easier to identify in logs.
+                processedValue = `Test ${generateRandomString(5)} - ${value.replace(/\$/g, '')}`;
             }
         }
 
@@ -112,21 +114,22 @@ async function assertPageLoads(page, url) {
 }
 
 /**
- * Asserts that a form can be filled with a specific payload and submitted successfully.
+ * Submits a form using a specific payload and waits for a success message.
+ * This is the main function for 'form' and 'ajax' routes with a payload.
  * @param {import('playwright').Page} page - The Playwright page object.
  * @param {string} url - The form URL.
  * @param {string} module - The module name for form saving strategy.
  * @param {object} payload - The specific payload to use for form fields.
  * @returns {Promise<void>}
  */
-async function assertFormSubmit(page, url, module, payload) {
+async function submitFormWithPayload(page, url, module, payload) {
     // Arrange: Navigate to the form
     const fullUrl = base + url;
     await page.goto(fullUrl, { waitUntil: 'domcontentloaded' });
     // Act: Process the payload, fill the form, and submit
     await processPayload(page, payload);
     await submitForm(page, module);
-    // Assert: Check for redirection and a success message
+    // Assert: Check for a success message
     await assertSuccessMessage(page);
 }
 
@@ -168,6 +171,7 @@ async function assertSuccessMessage(page, message = 'Record saved') {
 
 /**
  * Asserts that a record deletion is successful.
+ * This is for 'destroy' routes.
  * @param {import('playwright').Page} page - The Playwright page object.
  * @param {string} url - The URL to navigate to for deletion.
  * @returns {Promise<void>}
@@ -183,6 +187,7 @@ async function assertDestroy(page, url) {
 
 /**
  * Asserts that an AJAX call is successful.
+ * This is for 'ajax' routes that don't have a form payload.
  * @param {import('playwright').Page} page - The Playwright page object.
  * @param {string} url - The URL for the AJAX call.
  * @returns {Promise<void>}
@@ -194,36 +199,10 @@ async function assertAjax(page, url) {
     expect(response.status()).toBe(200);
 }
 
-/**
- * Asserts a form submission that starts with a modal.
- * @param {import('playwright').Page} page - The Playwright page object.
- * @param {string} formUrl - The URL of the modal form.
- * @param {string} module - The module name for form saving strategy.
- * @param {string} modalSelector - The selector for the modal trigger button.
- * @param {string} modalFormSelector - The selector for the form within the modal.
- * @param {object} payload - The specific payload for the modal form.
- * @returns {Promise<void>}
- */
-async function assertModalFormSubmit(page, formUrl, module, modalSelector, modalFormSelector, payload) {
-    // Arrange: Navigate to the page with the modal trigger button
-    await page.goto(base + formUrl);
-    await expect(page.locator(modalSelector)).toBeVisible();
-
-    // Act: Open the modal, fill the form with payload, and submit
-    await page.click(modalSelector);
-    await expect(page.locator(modalFormSelector)).toBeVisible();
-    await processPayload(page, payload);
-    await page.click('button[type="submit"]');
-
-    // Assert: A success message is visible
-    await assertSuccessMessage(page);
-}
-
 module.exports = {
     assertPageLoads,
-    assertFormSubmit,
+    submitFormWithPayload,
     assertDestroy,
     assertAjax,
-    assertModalFormSubmit,
     assertSuccessMessage,
 };
