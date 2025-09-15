@@ -1,133 +1,307 @@
 [
-  {"url":"/clients/view/{id}","type":"view","module":"clients"},
-  {"url":"/clients/view/{id}/invoices","type":"view","module":"clients"},
-  {"url":"/guest/view/{id}","type":"view","module":"clients"},
-  {"url":"/guest/invoice/{id}","type":"view","module":"clients"},
-  {"url":"/guest/quote/{id}","type":"view","module":"clients"},
-  {"url":"/clients","type":"index","module":"clients"},
-  {"url":"/clients/index","type":"index","module":"clients"},
-  {"url":"/clients/status/active","type":"index","module":"clients"},
-  {"url":"/clients/status/all","type":"index","module":"clients"},
-  {"url":"/clients/status/inactive","type":"index","module":"clients"},
-  {"url":"/user_clients/index","type":"index","module":"clients"},
-  {"url":"/clients/form","type":"create/edit","module":"clients"},
-  {"url":"/clients/form/{id}","type":"create/edit","module":"clients"},
-  {"url":"/user_clients/form","type":"create/edit","module":"clients"},
-  {"url":"/user_clients/form/{id}","type":"create/edit","module":"clients"},
-  {"url":"/clients/delete/{id}","type":"destroy","module":"clients"},
-  {"url":"/clients/remove/{id}","type":"destroy","module":"clients"},
-  {"url":"/user_clients/delete/{id}","type":"destroy","module":"clients"},
+  {
+    "module": "clients",
+    "type": "index",
+    "routes": [
+      "/clients",
+      "/clients/index",
+      "/clients/status/active",
+      "/clients/status/all",
+      "/clients/status/inactive",
+      "/user_clients/index"
+    ]
+  },
+  {
+    "module": "clients",
+    "type": "view",
+    "routes": [
+      "/clients/view/{id}",
+      "/clients/view/{id}/invoices",
+      "/guest/view/{id}",
+      "/guest/invoice/{id}",
+      "/guest/quote/{id}"
+    ]
+  },
+  {
+    "module": "clients",
+    "type": "create/edit",
+    "routes": [
+      "/clients/form",
+      "/clients/form/{id}",
+      "/user_clients/form",
+      "/user_clients/form/{id}"
+    ]
+  },
+  {
+    "module": "clients",
+    "type": "destroy",
+    "routes": [
+      "/clients/delete/{id}",
+      "/clients/remove/{id}",
+      "/user_clients/delete/{id}"
+    ]
+  },
 
-  {"url":"/custom_fields","type":"index","module":"core"},
-  {"url":"/custom_fields/index","type":"index","module":"core"},
-  {"url":"/custom_values","type":"index","module":"core"},
-  {"url":"/email_templates/index","type":"index","module":"core"},
-  {"url":"/import","type":"index","module":"core"},
-  {"url":"/reports/invoice_aging","type":"index","module":"core"},
-  {"url":"/reports/invoices_per_client","type":"index","module":"core"},
-  {"url":"/reports/payment_history","type":"index","module":"core"},
-  {"url":"/reports/sales_by_client","type":"index","module":"core"},
-  {"url":"/reports/sales_by_year","type":"index","module":"core"},
-  {"url":"/users","type":"index","module":"core"},
-  {"url":"/users/index","type":"index","module":"core"},
-  {"url":"/sessions/index","type":"index","module":"core"},
-  {"url":"/custom_fields/form","type":"create/edit","module":"core"},
-  {"url":"/custom_fields/form/{id}","type":"create/edit","module":"core"},
-  {"url":"/custom_values/create","type":"create/edit","module":"core"},
-  {"url":"/custom_values/create/{id}","type":"create/edit","module":"core"},
-  {"url":"/email_templates/form","type":"create/edit","module":"core"},
-  {"url":"/email_templates/form/{id}","type":"create/edit","module":"core"},
-  {"url":"/import/form","type":"create/edit","module":"core"},
-  {"url":"/users/form","type":"create/edit","module":"core"},
-  {"url":"/users/form/{id}","type":"create/edit","module":"core"},
-  {"url":"/users/change_password/{id}","type":"create/edit","module":"core"},
-  {"url":"/custom_fields/delete/{id}","type":"destroy","module":"core"},
-  {"url":"/custom_values/delete/{id}","type":"destroy","module":"core"},
-  {"url":"/email_templates/delete/{id}","type":"destroy","module":"core"},
-  {"url":"/users/delete/{id}","type":"destroy","module":"core"},
-  {"url":"/custom_fields/table/all","type":"ajax","module":"core"},
-  {"url":"/custom_fields/table/client","type":"ajax","module":"core"},
-  {"url":"/custom_fields/table/invoice","type":"ajax","module":"core"},
-  {"url":"/custom_fields/table/payment","type":"ajax","module":"core"},
-  {"url":"/custom_fields/table/quote","type":"ajax","module":"core"},
-  {"url":"/custom_fields/table/user","type":"ajax","module":"core"},
-  {"url":"/custom_values/field","type":"ajax","module":"core"},
-  {"url":"/custom_values/field/{id}","type":"ajax","module":"core"},
-  {"url":"/mailer/invoice/{id}","type":"ajax","module":"core"},
-  {"url":"/mailer/quote/{id}","type":"ajax","module":"core"},
-  {"url":"/layout/header","type":"ajax","module":"core"},
-  {"url":"/layout/footer","type":"ajax","module":"core"},
-  {"url":"/layout/sidebar","type":"ajax","module":"core"},
-  {"url":"/upload/save","type":"ajax","module":"core"},
-  {"url":"/dashboard","type":"exotic","module":"core"},
-  {"url":"/settings","type":"exotic","module":"core"},
-  {"url":"/sessions/login","type":"exotic","module":"core"},
-  {"url":"/sessions/logout","type":"exotic","module":"core"},
-  {"url":"/upload/form","type":"exotic","module":"core"},
-  {"url":"/upload/delete/{id}","type":"exotic","module":"core"},
+  {
+    "module": "core",
+    "type": "index",
+    "routes": [
+      "/custom_fields",
+      "/custom_fields/index",
+      "/custom_values",
+      "/email_templates/index",
+      "/import",
+      "/reports/invoice_aging",
+      "/reports/invoices_per_client",
+      "/reports/payment_history",
+      "/reports/sales_by_client",
+      "/reports/sales_by_year",
+      "/users",
+      "/users/index",
+      "/sessions/index"
+    ]
+  },
+  {
+    "module": "core",
+    "type": "create/edit",
+    "routes": [
+      "/custom_fields/form",
+      "/custom_fields/form/{id}",
+      "/custom_values/create",
+      "/custom_values/create/{id}",
+      "/email_templates/form",
+      "/email_templates/form/{id}",
+      "/import/form",
+      "/users/form",
+      "/users/form/{id}",
+      "/users/change_password/{id}"
+    ]
+  },
+  {
+    "module": "core",
+    "type": "destroy",
+    "routes": [
+      "/custom_fields/delete/{id}",
+      "/custom_values/delete/{id}",
+      "/email_templates/delete/{id}",
+      "/users/delete/{id}"
+    ]
+  },
+  {
+    "module": "core",
+    "type": "exotic",
+    "routes": [
+      "/dashboard",
+      "/settings",
+      "/sessions/login",
+      "/sessions/logout",
+      "/upload/form",
+      "/upload/delete/{id}"
+    ]
+  },
+  {
+    "module": "core",
+    "type": "ajax",
+    "routes": [
+      "/custom_fields/table/all",
+      "/custom_fields/table/client",
+      "/custom_fields/table/invoice",
+      "/custom_fields/table/payment",
+      "/custom_fields/table/quote",
+      "/custom_fields/table/user",
+      "/custom_values/field",
+      "/custom_values/field/{id}",
+      "/mailer/invoice/{id}",
+      "/mailer/quote/{id}",
+      "/layout/header",
+      "/layout/footer",
+      "/layout/sidebar",
+      "/upload/save"
+    ]
+  },
 
-  {"url":"/families/index","type":"index","module":"products"},
-  {"url":"/units/index","type":"index","module":"products"},
-  {"url":"/products/index","type":"index","module":"products"},
-  {"url":"/families/form","type":"create/edit","module":"products"},
-  {"url":"/families/form/{id}","type":"create/edit","module":"products"},
-  {"url":"/units/form","type":"create/edit","module":"products"},
-  {"url":"/units/form/{id}","type":"create/edit","module":"products"},
-  {"url":"/products/form","type":"create/edit","module":"products"},
-  {"url":"/products/form/{id}","type":"create/edit","module":"products"},
-  {"url":"/families/delete/{id}","type":"destroy","module":"products"},
-  {"url":"/units/delete/{id}","type":"destroy","module":"products"},
-  {"url":"/products/delete/{id}","type":"destroy","module":"products"},
+  {
+    "module": "products",
+    "type": "index",
+    "routes": [
+      "/families/index",
+      "/units/index",
+      "/products/index"
+    ]
+  },
+  {
+    "module": "products",
+    "type": "create/edit",
+    "routes": [
+      "/families/form",
+      "/families/form/{id}",
+      "/units/form",
+      "/units/form/{id}",
+      "/products/form",
+      "/products/form/{id}"
+    ]
+  },
+  {
+    "module": "products",
+    "type": "destroy",
+    "routes": [
+      "/families/delete/{id}",
+      "/units/delete/{id}",
+      "/products/delete/{id}"
+    ]
+  },
 
-  {"url":"/projects/view/{id}","type":"view","module":"projects"},
-  {"url":"/tasks/index","type":"index","module":"projects"},
-  {"url":"/projects/index","type":"index","module":"projects"},
-  {"url":"/tasks/form","type":"create/edit","module":"projects"},
-  {"url":"/tasks/form/{id}","type":"create/edit","module":"projects"},
-  {"url":"/projects/form","type":"create/edit","module":"projects"},
-  {"url":"/projects/form/{id}","type":"create/edit","module":"projects"},
-  {"url":"/tasks/delete/{id}","type":"destroy","module":"projects"},
-  {"url":"/projects/delete/{id}","type":"destroy","module":"projects"},
+  {
+    "module": "projects",
+    "type": "index",
+    "routes": [
+      "/tasks/index",
+      "/projects/index"
+    ]
+  },
+  {
+    "module": "projects",
+    "type": "view",
+    "routes": [
+      "/projects/view/{id}"
+    ]
+  },
+  {
+    "module": "projects",
+    "type": "create/edit",
+    "routes": [
+      "/tasks/form",
+      "/tasks/form/{id}",
+      "/projects/form",
+      "/projects/form/{id}"
+    ]
+  },
+  {
+    "module": "projects",
+    "type": "destroy",
+    "routes": [
+      "/tasks/delete/{id}",
+      "/projects/delete/{id}"
+    ]
+  },
 
-  {"url":"/quotes/view/{id}","type":"view","module":"quotes"},
-  {"url":"/quotes/index","type":"index","module":"quotes"},
-  {"url":"/quotes/status/all","type":"index","module":"quotes"},
-  {"url":"/quotes/status/approved","type":"index","module":"quotes"},
-  {"url":"/quotes/status/canceled","type":"index","module":"quotes"},
-  {"url":"/quotes/status/draft","type":"index","module":"quotes"},
-  {"url":"/quotes/status/rejected","type":"index","module":"quotes"},
-  {"url":"/quotes/status/sent","type":"index","module":"quotes"},
-  {"url":"/quotes/status/viewed","type":"index","module":"quotes"},
-  {"url":"/quotes/delete/{id}","type":"destroy","module":"quotes"},
-  {"url":"/quotes/cancel/{id}","type":"destroy","module":"quotes"},
-  {"url":"/quotes/generate_pdf/{id}","type":"ajax","module":"quotes"},
+  {
+    "module": "quotes",
+    "type": "index",
+    "routes": [
+      "/quotes/index",
+      "/quotes/status/all",
+      "/quotes/status/approved",
+      "/quotes/status/canceled",
+      "/quotes/status/draft",
+      "/quotes/status/rejected",
+      "/quotes/status/sent",
+      "/quotes/status/viewed"
+    ]
+  },
+  {
+    "module": "quotes",
+    "type": "view",
+    "routes": [
+      "/quotes/view/{id}"
+    ]
+  },
+  {
+    "module": "quotes",
+    "type": "destroy",
+    "routes": [
+      "/quotes/delete/{id}",
+      "/quotes/cancel/{id}"
+    ]
+  },
+  {
+    "module": "quotes",
+    "type": "ajax",
+    "routes": [
+      "/quotes/generate_pdf/{id}"
+    ]
+  },
 
-  {"url":"/payments/index","type":"index","module":"payments"},
-  {"url":"/payment_methods/index","type":"index","module":"payments"},
-  {"url":"/payments/form","type":"create/edit","module":"payments"},
-  {"url":"/payments/form/{id}","type":"create/edit","module":"payments"},
-  {"url":"/payment_methods/form","type":"create/edit","module":"payments"},
-  {"url":"/payment_methods/form/{id}","type":"create/edit","module":"payments"},
-  {"url":"/payments/delete/{id}","type":"destroy","module":"payments"},
-  {"url":"/payment_methods/delete/{id}","type":"destroy","module":"payments"},
-  {"url":"/payments/online_logs","type":"ajax","module":"payments"},
+  {
+    "module": "payments",
+    "type": "index",
+    "routes": [
+      "/payments/index",
+      "/payment_methods/index"
+    ]
+  },
+  {
+    "module": "payments",
+    "type": "create/edit",
+    "routes": [
+      "/payments/form",
+      "/payments/form/{id}",
+      "/payment_methods/form",
+      "/payment_methods/form/{id}"
+    ]
+  },
+  {
+    "module": "payments",
+    "type": "destroy",
+    "routes": [
+      "/payments/delete/{id}",
+      "/payment_methods/delete/{id}"
+    ]
+  },
+  {
+    "module": "payments",
+    "type": "ajax",
+    "routes": [
+      "/payments/online_logs"
+    ]
+  },
 
-  {"url":"/invoices/view/{id}","type":"view","module":"invoices"},
-  {"url":"/invoices/index","type":"index","module":"invoices"},
-  {"url":"/invoices/archive","type":"index","module":"invoices"},
-  {"url":"/invoices/status/all","type":"index","module":"invoices"},
-  {"url":"/invoices/status/draft","type":"index","module":"invoices"},
-  {"url":"/invoices/status/overdue","type":"index","module":"invoices"},
-  {"url":"/invoices/status/paid","type":"index","module":"invoices"},
-  {"url":"/invoices/status/sent","type":"index","module":"invoices"},
-  {"url":"/invoices/status/viewed","type":"index","module":"invoices"},
-  {"url":"/invoices/recurring","type":"index","module":"invoices"},
-  {"url":"/invoices/recurring/index","type":"index","module":"invoices"},
-  {"url":"/invoice_groups/index","type":"index","module":"invoices"},
-  {"url":"/invoice_groups/form","type":"create/edit","module":"invoices"},
-  {"url":"/invoice_groups/form/{id}","type":"create/edit","module":"invoices"},
-  {"url":"/invoices/delete/{id}","type":"destroy","module":"invoices"},
-  {"url":"/invoices/recurring/stop/{id}","type":"destroy","module":"invoices"},
-  {"url":"/invoice_groups/delete/{id}","type":"destroy","module":"invoices"},
-  {"url":"/invoices/generate_pdf/{id}","type":"ajax","module":"invoices"}
+  {
+    "module": "invoices",
+    "type": "index",
+    "routes": [
+      "/invoices/index",
+      "/invoices/archive",
+      "/invoices/status/all",
+      "/invoices/status/draft",
+      "/invoices/status/overdue",
+      "/invoices/status/paid",
+      "/invoices/status/sent",
+      "/invoices/status/viewed",
+      "/invoices/recurring",
+      "/invoices/recurring/index",
+      "/invoice_groups/index"
+    ]
+  },
+  {
+    "module": "invoices",
+    "type": "view",
+    "routes": [
+      "/invoices/view/{id}"
+    ]
+  },
+  {
+    "module": "invoices",
+    "type": "create/edit",
+    "routes": [
+      "/invoice_groups/form",
+      "/invoice_groups/form/{id}"
+    ]
+  },
+  {
+    "module": "invoices",
+    "type": "destroy",
+    "routes": [
+      "/invoices/delete/{id}",
+      "/invoices/recurring/stop/{id}",
+      "/invoice_groups/delete/{id}"
+    ]
+  },
+  {
+    "module": "invoices",
+    "type": "ajax",
+    "routes": [
+      "/invoices/generate_pdf/{id}"
+    ]
+  }
 ]
