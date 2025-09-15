@@ -1,7 +1,8 @@
 /**
  * @fileoverview Test suite for the Clients module.
  * This file contains tests for all `clients` routes, including views, forms, and deletions.
- * Payloads are explicitly documented in JSDoc blocks for relevant tests
+ * Payloads are explicitly documented in JSDoc blocks for relevant tests.
+ * @author FREE AI agent in the GitHub Copilot plugin of phpstorm
  */
 
 const { page, expect } = require('jest-playwright-preset');
