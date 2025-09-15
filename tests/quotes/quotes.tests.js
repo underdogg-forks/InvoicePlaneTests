@@ -3,9 +3,8 @@
  * This file contains tests for all `quotes` routes, including views, forms, and deletions.
  * Payloads are explicitly documented in JSDoc blocks for relevant tests.
  */
-
 const { page, expect } = require('jest-playwright-preset');
-const { assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax } = require('../test-helpers');
+const { assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax } = require('../../test-helpers');
 
 describe('Quotes Module', () => {
   // Routes: /quotes/index

@@ -3,7 +3,7 @@
  * This file contains tests for all `payments` routes, including views, forms, and deletions.
  */
 const { page, expect } = require('jest-playwright-preset');
-const { assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax } = require('../test-helpers');
+const { assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax } = require('../../test-helpers');
 
 describe('Payments Module', () => {
   // Route: /payments/index

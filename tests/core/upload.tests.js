@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Test suite for the Core module.
+ * This file contains tests for all `uploads` routes, including views, forms, and deletions.
+ * Payloads are explicitly documented in JSDoc blocks for relevant tests.
+ */
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, assertAjax } = require('../../test-helpers');
 
