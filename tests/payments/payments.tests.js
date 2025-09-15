@@ -1,47 +1,47 @@
-const TestRunner = require('../testrunner');
+const { page, expect } = require('jest-playwright-preset');
+const { assertPageLoads, assertFormSubmit, assertDestroy, assertAjax } = require('../test-helpers');
 
-const tests = {
-  async it_can_view_the_payments_index(page, runner) {
-    const route = runner.getRoute('payments', '/payments/index');
-    await runner.handleViewOrIndex(page, route);
-    expect(await page.locator('h1.content-title').textContent()).toBe('Payments');
-  },
-  async it_can_view_payment_methods_index(page, runner) {
-    const route = runner.getRoute('payments', '/payment_methods/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_create_a_payment(page, runner) {
-    const route = runner.getRoute('payments', '/payments/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_payment(page, runner) {
-    const route = runner.getRoute('payments', '/payments/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_create_a_payment_method(page, runner) {
-    const route = runner.getRoute('payments', '/payment_methods/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_payment_method(page, runner) {
-    const route = runner.getRoute('payments', '/payment_methods/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_delete_a_payment(page, runner) {
-    const route = runner.getRoute('payments', '/payments/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_delete_a_payment_method(page, runner) {
-    const route = runner.getRoute('payments', '/payment_methods/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_view_online_logs_ajax(page, runner) {
-    const route = runner.getRoute('payments', '/payments/online_logs');
-    await runner.handleAjax(page, route);
-  }
-};
+describe('Payments Module', () => {
 
-module.exports = { tests };
+  // Index Routes
+  test('it can view payments index', async () => {
+    await assertPageLoads(page, '/payments/index');
+    await expect(page.locator('.content-title')).toContainText('Payments');
+  });
+
+  test('it can view payment methods index', async () => {
+    await assertPageLoads(page, '/payment_methods/index');
+  });
+
+  // Form Routes
+  test('it can create a new payment', async () => {
+    await assertFormSubmit(page, '/payments/form', 'payments');
+  });
+
+  test('it can edit an existing payment', async () => {
+    await assertFormSubmit(page, '/payments/form/1', 'payments');
+  });
+
+  test('it can create a new payment method', async () => {
+    await assertFormSubmit(page, '/payment_methods/form', 'payments');
+  });
+
+  test('it can edit an existing payment method', async () => {
+    await assertFormSubmit(page, '/payment_methods/form/1', 'payments');
+  });
+
+  // Destroy Routes
+  test('it can delete a payment', async () => {
+    await assertDestroy(page, '/payments/delete/1');
+  });
+
+  test('it can delete a payment method', async () => {
+    await assertDestroy(page, '/payment_methods/delete/1');
+  });
+
+  // AJAX Routes
+  test('it can view online logs', async () => {
+    await assertAjax(page, '/payments/online_logs');
+  });
+
+});
