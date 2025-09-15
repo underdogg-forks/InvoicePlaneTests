@@ -1,15 +1,20 @@
+/**
+ * @fileoverview Test suite for the Core module.
+ * This file contains tests for routes related to custom fields
+ */
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, assertFormSubmit, assertDestroy, assertAjax } = require('../../test-helpers');
 
 describe('Custom Fields Module', () => {
-
-  // View Routes
-  test('it can view custom fields index', async () => {
+  // Routes: /custom_fields, /custom_fields/index
+  test('it can view the custom fields index page', async () => {
     await assertPageLoads(page, '/custom_fields/index');
+    await expect(page.locator('.content-title')).toContainText('Custom Fields');
   });
 
   test('it can view custom fields canonical route', async () => {
     await assertPageLoads(page, '/custom_fields');
+    await expect(page.locator('.content-title')).toContainText('Custom Fields');
   });
 
   // Form Routes
