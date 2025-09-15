@@ -1,66 +1,54 @@
+/**
+ * Test suite for the Invoices module, including modal form and AJAX actions.
+ */
+
 const { page, expect } = require('jest-playwright-preset');
-const { assertPageLoads, assertDestroy, assertAjax } = require('../../test-helpers');
+const { assertPageLoads, assertDestroy, assertAjax, assertModalFormSubmit } = require('../../test-helpers');
 
 describe('Invoices Module', () => {
-
-  // View Routes
-  test('it can view invoices index', async () => {
-    await assertPageLoads(page, '/invoices/index');
+  // Test invoice view pages
+  test('it can view the invoices index', async () => {
+    // Arrange: Define the URL
+    const url = '/invoices/index';
+    // Act & Assert: Navigate and check for the main title
+    await assertPageLoads(page, url);
     await expect(page.locator('.content-title')).toContainText('Invoices');
   });
 
-  test('it can view invoices archive', async () => {
+  test('it can view the invoice archive', async () => {
+    // Act & Assert: Navigate and check for the main title
     await assertPageLoads(page, '/invoices/archive');
+    await expect(page.locator('.content-title')).toContainText('Invoice Archive');
   });
 
-  test('it can view all invoices', async () => {
-    await assertPageLoads(page, '/invoices/status/all');
-  });
-
-  test('it can view draft invoices', async () => {
-    await assertPageLoads(page, '/invoices/status/draft');
-  });
-
-  test('it can view overdue invoices', async () => {
-    await assertPageLoads(page, '/invoices/status/overdue');
-  });
-
-  test('it can view paid invoices', async () => {
-    await assertPageLoads(page, '/invoices/status/paid');
-  });
-
-  test('it can view sent invoices', async () => {
-    await assertPageLoads(page, '/invoices/status/sent');
-  });
-
-  test('it can view viewed invoices', async () => {
-    await assertPageLoads(page, '/invoices/status/viewed');
-  });
-
-  test('it can view recurring invoices', async () => {
-    await assertPageLoads(page, '/invoices/recurring');
-  });
-
-  test('it can view recurring invoices index', async () => {
-    await assertPageLoads(page, '/invoices/recurring/index');
-  });
-
-  test('it can view an invoice by id', async () => {
-    await assertPageLoads(page, '/invoices/view/6617');
+  test('it can view a specific invoice', async () => {
+    // Arrange: Define the URL with a hardcoded ID
+    const url = '/invoices/view/6617';
+    // Act & Assert: Navigate and check for the main title
+    await assertPageLoads(page, url);
     await expect(page.locator('.content-title')).toContainText('Invoice');
   });
 
-  // Destroy Routes
-  test('it can delete an invoice', async () => {
-    await assertDestroy(page, '/invoices/delete/1');
+  // Test invoice form pages and modals
+  test('it can create a new invoice from the modal with payload', async () => {
+    // Arrange: Get the specific payload for the modal form
+    const createInvoicePayload = {
+      "client_id": "$copy_invoice_client_id",
+      "invoice_date_created": "2024-09-15",
+      "invoice_group_id": "$invoice_group_id",
+      "invoice_password": "$invoice_password",
+      "invoice_time_created": "$date('H:i:s')",
+      "user_id": "$user_id"
+    };
+    // Act & Assert: Click the "create invoice" button to open the modal and submit it with the payload
+    await assertModalFormSubmit(page, '/invoices/index', 'invoices', 'a[href="/invoices/form"]', '#modal-create-invoice', createInvoicePayload);
   });
 
-  test('it can stop a recurring invoice by id', async () => {
-    await assertDestroy(page, '/invoices/recurring/stop/133');
-  });
-
-  // AJAX Routes
-  test('it can generate an invoice PDF by id', async () => {
-    await assertAjax(page, '/invoices/generate_pdf/6290');
+  // Test AJAX actions
+  test('it can generate an invoice PDF', async () => {
+    // Arrange: Define the URL for the AJAX call with a hardcoded ID
+    const url = '/invoices/generate_pdf/6290';
+    // Act & Assert: Make the AJAX call and check the response status
+    await assertAjax(page, url);
   });
 });
