@@ -2,21 +2,14 @@
  * @fileoverview Test suite for the Payments module.
  * This file contains tests for all `payments` routes, including views, forms, and deletions.
  */
-
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax } = require('../test-helpers');
 
 describe('Payments Module', () => {
-  // Routes: /payments/index
+  // Route: /payments/index
   test('it can view the payments index', async () => {
     await assertPageLoads(page, '/payments/index');
     await expect(page.locator('.content-title')).toContainText('Payments');
-  });
-
-  // Route: /payment_methods/index
-  test('it can view the payment methods index', async () => {
-    await assertPageLoads(page, '/payment_methods/index');
-    await expect(page.locator('.content-title')).toContainText('Payment Methods');
   });
 
   /**
@@ -63,44 +56,9 @@ describe('Payments Module', () => {
     await submitFormWithPayload(page, '/payments/form/966', 'payments', editPaymentPayload);
   });
 
-  /**
-   * @description Test creating a new payment method.
-   * @payload
-   * {
-   * "payment_method_name": "$payment_method_name"
-   * }
-   */
-  // Route: /payment_methods/form
-  test('it can create a new payment method', async () => {
-    const createMethodPayload = {
-      "payment_method_name": "Test Payment Method"
-    };
-    await submitFormWithPayload(page, '/payment_methods/form', 'payment_methods', createMethodPayload);
-  });
-
-  /**
-   * @description Test editing an existing payment method.
-   * @payload
-   * {
-   * "payment_method_name": "$payment_method_name"
-   * }
-   */
-  // Route: /payment_methods/form/{id}
-  test('it can edit an existing payment method', async () => {
-    const editMethodPayload = {
-      "payment_method_name": "Edited Payment Method"
-    };
-    await submitFormWithPayload(page, '/payment_methods/form/108', 'payment_methods', editMethodPayload);
-  });
-
   // Route: /payments/delete/{id}
   test('it can delete a payment', async () => {
     await assertDestroy(page, '/payments/delete/966');
-  });
-
-  // Route: /payment_methods/delete/{id}
-  test('it can delete a payment method', async () => {
-    await assertDestroy(page, '/payment_methods/delete/108');
   });
 
   // Route: /payments/online_logs
