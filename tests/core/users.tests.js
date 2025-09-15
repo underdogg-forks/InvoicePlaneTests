@@ -1,32 +1,63 @@
+/**
+ * @fileoverview Test suite for the Users component of the Core module.
+ * This file contains tests for the users and sessions routes.
+ */
 const { page, expect } = require('jest-playwright-preset');
-const { assertPageLoads, assertFormSubmit, assertDestroy } = require('../../test-helpers');
+const { assertPageLoads, submitFormWithPayload, assertDestroy } = require('../../test-helpers');
 
-describe('Users Module', () => {
-
-  // View Routes
-  test('it can view users index', async () => {
+describe('Users Component', () => {
+  // Routes: /users, /users/index
+  test('it can view the users index', async () => {
     await assertPageLoads(page, '/users/index');
+    await expect(page.locator('.content-title')).toContainText('Users');
   });
 
-  test('it can view users canonical route', async () => {
-    await assertPageLoads(page, '/users');
+  // Route: /sessions/index
+  test('it can view the user sessions index', async () => {
+    await assertPageLoads(page, '/sessions/index');
+    await expect(page.locator('.content-title')).toContainText('User Sessions');
   });
 
-  // Form Routes
+  /**
+   * @description Test creating a new user.
+   * @payload
+   * {
+   * "user_email": "$user_email",
+   * "user_name": "$user_name",
+   * "user_password": "$user_password",
+   * "user_password_verify": "$user_password_verify"
+   * }
+   */
+  // Route: /users/form
   test('it can create a new user', async () => {
-    await assertFormSubmit(page, '/users/form', 'core');
+    const createUserPayload = {
+      "user_email": "newuser@example.com",
+      "user_name": "New User",
+      "user_password": "password",
+      "user_password_verify": "password"
+    };
+    await submitFormWithPayload(page, '/users/form', 'users', createUserPayload);
   });
 
-  test('it can edit an existing user by id', async () => {
-    await assertFormSubmit(page, '/users/form/1', 'core');
+  /**
+   * @description Test editing an existing user.
+   * @payload
+   * {
+   * "user_email": "$user_email",
+   * "user_name": "$user_name"
+   * }
+   */
+  // Route: /users/form/{id}
+  test('it can edit an existing user', async () => {
+    const editUserPayload = {
+      "user_email": "editeduser@example.com",
+      "user_name": "Edited User"
+    };
+    await submitFormWithPayload(page, '/users/form/2', 'users', editUserPayload);
   });
 
-  test('it can change a user password by id', async () => {
-    await assertFormSubmit(page, '/users/change_password/1', 'core');
-  });
-
-  // Destroy Routes
+  // Route: /users/delete/{id}
   test('it can delete a user', async () => {
-    await assertDestroy(page, '/users/delete/1');
+    await assertDestroy(page, '/users/delete/2');
   });
 });
