@@ -1,187 +1,179 @@
-const TestRunner = require('../testrunner');
+const { page, expect } = require('jest-playwright-preset');
+const { assertPageLoads, assertFormSubmit, assertDestroy, assertAjax } = require('../test-helpers');
 
-const tests = {
-  async it_can_view_custom_fields(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_custom_fields_index(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_custom_values(page, runner) {
-    const route = runner.getRoute('core', '/custom_values');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_email_templates(page, runner) {
-    const route = runner.getRoute('core', '/email_templates/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_import_page(page, runner) {
-    const route = runner.getRoute('core', '/import');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_users_index(page, runner) {
-    const route = runner.getRoute('core', '/users');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_users_index_explicit(page, runner) {
-    const route = runner.getRoute('core', '/users/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_sessions_index(page, runner) {
-    const route = runner.getRoute('core', '/sessions/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_create_a_custom_field(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_custom_field(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_create_custom_values(page, runner) {
-    const route = runner.getRoute('core', '/custom_values/create');
-    await runner.handleForm(page, route);
-  },
-  async it_can_create_custom_values_with_id(page, runner) {
-    const route = runner.getRoute('core', '/custom_values/create/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_create_an_email_template(page, runner) {
-    const route = runner.getRoute('core', '/email_templates/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_an_email_template(page, runner) {
-    const route = runner.getRoute('core', '/email_templates/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_view_the_import_form(page, runner) {
-    const route = runner.getRoute('core', '/import/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_create_a_user(page, runner) {
-    const route = runner.getRoute('core', '/users/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_user(page, runner) {
-    const route = runner.getRoute('core', '/users/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_change_a_user_password(page, runner) {
-    const route = runner.getRoute('core', '/users/change_password/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_delete_a_custom_field(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_delete_a_custom_value(page, runner) {
-    const route = runner.getRoute('core', '/custom_values/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_delete_an_email_template(page, runner) {
-    const route = runner.getRoute('core', '/email_templates/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_delete_a_user(page, runner) {
-    const route = runner.getRoute('core', '/users/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_view_the_dashboard(page, runner) {
-    const route = runner.getRoute('core', '/dashboard');
-    await runner.handleExotic(page, route);
-  },
-  async it_can_view_settings(page, runner) {
-    const route = runner.getRoute('core', '/settings');
-    await runner.handleExotic(page, route);
-  },
-  async it_can_login(page, runner) {
-    const route = runner.getRoute('core', '/sessions/login');
-    await runner.handleExotic(page, route);
-  },
-  async it_can_logout(page, runner) {
-    const route = runner.getRoute('core', '/sessions/logout');
-    await runner.handleExotic(page, route);
-  },
-  async it_can_view_upload_form(page, runner) {
-    const route = runner.getRoute('core', '/upload/form');
-    await runner.handleExotic(page, route);
-  },
-  async it_can_delete_an_upload(page, runner) {
-    const route = runner.getRoute('core', '/upload/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleExotic(page, { ...route, url });
-  },
-  async it_can_get_all_custom_fields_ajax(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/table/all');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_client_custom_fields_ajax(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/table/client');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_invoice_custom_fields_ajax(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/table/invoice');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_payment_custom_fields_ajax(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/table/payment');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_quote_custom_fields_ajax(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/table/quote');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_user_custom_fields_ajax(page, runner) {
-    const route = runner.getRoute('core', '/custom_fields/table/user');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_custom_values_field_ajax(page, runner) {
-    const route = runner.getRoute('core', '/custom_values/field');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_custom_values_field_with_id_ajax(page, runner) {
-    const route = runner.getRoute('core', '/custom_values/field/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleAjax(page, { ...route, url });
-  },
-  async it_can_mailer_invoice_ajax(page, runner) {
-    const route = runner.getRoute('core', '/mailer/invoice/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleAjax(page, { ...route, url });
-  },
-  async it_can_mailer_quote_ajax(page, runner) {
-    const route = runner.getRoute('core', '/mailer/quote/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleAjax(page, { ...route, url });
-  },
-  async it_can_get_layout_header_ajax(page, runner) {
-    const route = runner.getRoute('core', '/layout/header');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_layout_footer_ajax(page, runner) {
-    const route = runner.getRoute('core', '/layout/footer');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_get_layout_sidebar_ajax(page, runner) {
-    const route = runner.getRoute('core', '/layout/sidebar');
-    await runner.handleAjax(page, route);
-  },
-  async it_can_save_upload_ajax(page, runner) {
-    const route = runner.getRoute('core', '/upload/save');
-    await runner.handleAjax(page, route);
-  }
-};
+describe('Core Module', () => {
 
-module.exports = { tests };
+  // Index Routes
+  test('it can view custom fields index', async () => {
+    await assertPageLoads(page, '/custom_fields/index');
+  });
+  
+  test('it can view custom values', async () => {
+    await assertPageLoads(page, '/custom_values');
+  });
+  
+  test('it can view email templates index', async () => {
+    await assertPageLoads(page, '/email_templates/index');
+  });
+  
+  test('it can view import page', async () => {
+    await assertPageLoads(page, '/import');
+  });
+
+  test('it can view reports invoice aging', async () => {
+    await assertPageLoads(page, '/reports/invoice_aging');
+  });
+  
+  test('it can view reports invoices per client', async () => {
+    await assertPageLoads(page, '/reports/invoices_per_client');
+  });
+  
+  test('it can view reports payment history', async () => {
+    await assertPageLoads(page, '/reports/payment_history');
+  });
+  
+  test('it can view reports sales by client', async () => {
+    await assertPageLoads(page, '/reports/sales_by_client');
+  });
+  
+  test('it can view reports sales by year', async () => {
+    await assertPageLoads(page, '/reports/sales_by_year');
+  });
+  
+  test('it can view users index', async () => {
+    await assertPageLoads(page, '/users/index');
+  });
+  
+  test('it can view sessions index', async () => {
+    await assertPageLoads(page, '/sessions/index');
+  });
+
+  // Form Routes
+  test('it can create a custom field', async () => {
+    await assertFormSubmit(page, '/custom_fields/form', 'core');
+  });
+
+  test('it can edit a custom field', async () => {
+    await assertFormSubmit(page, '/custom_fields/form/1', 'core');
+  });
+  
+  test('it can create a custom value', async () => {
+    await assertFormSubmit(page, '/custom_values/create', 'core');
+  });
+
+  test('it can create a custom value with id', async () => {
+    await assertFormSubmit(page, '/custom_values/create/1', 'core');
+  });
+  
+  test('it can create an email template', async () => {
+    await assertFormSubmit(page, '/email_templates/form', 'core');
+  });
+
+  test('it can edit an email template', async () => {
+    await assertFormSubmit(page, '/email_templates/form/1', 'core');
+  });
+  
+  test('it can view the import form', async () => {
+    await assertFormSubmit(page, '/import/form', 'core');
+  });
+  
+  test('it can create a new user', async () => {
+    await assertFormSubmit(page, '/users/form', 'core');
+  });
+  
+  test('it can edit an existing user', async () => {
+    await assertFormSubmit(page, '/users/form/1', 'core');
+  });
+  
+  test('it can change a user password', async () => {
+    await assertFormSubmit(page, '/users/change_password/1', 'core');
+  });
+
+  // Destroy Routes
+  test('it can delete a custom field', async () => {
+    await assertDestroy(page, '/custom_fields/delete/1');
+  });
+  
+  test('it can delete a custom value', async () => {
+    await assertDestroy(page, '/custom_values/delete/1');
+  });
+  
+  test('it can delete an email template', async () => {
+    await assertDestroy(page, '/email_templates/delete/1');
+  });
+  
+  test('it can delete a user', async () => {
+    await assertDestroy(page, '/users/delete/1');
+  });
+
+  // Exotic Routes
+  test('it can view the dashboard', async () => {
+    await assertPageLoads(page, '/dashboard');
+    await expect(page.locator('.content-title')).toContainText('Dashboard');
+  });
+  
+  test('it can view system settings', async () => {
+    await assertPageLoads(page, '/settings');
+  });
+
+  test('it can access login page', async () => {
+    await assertPageLoads(page, '/sessions/login');
+  });
+  
+  test('it can access logout route', async () => {
+    await assertPageLoads(page, '/sessions/logout');
+  });
+  
+  test('it can view upload form', async () => {
+    await assertPageLoads(page, '/upload/form');
+  });
+  
+  test('it can delete a file upload', async () => {
+    await assertPageLoads(page, '/upload/delete/1');
+  });
+
+  // Ajax Routes
+  test('it can get custom fields table all', async () => {
+    await assertAjax(page, '/custom_fields/table/all');
+  });
+  
+  test('it can get custom fields for clients', async () => {
+    await assertAjax(page, '/custom_fields/table/client');
+  });
+  
+  test('it can get custom fields for invoices', async () => {
+    await assertAjax(page, '/custom_fields/table/invoice');
+  });
+  
+  test('it can get custom fields for payments', async () => {
+    await assertAjax(page, '/custom_fields/table/payment');
+  });
+  
+  test('it can get custom fields for quotes', async () => {
+    await assertAjax(page, '/custom_fields/table/quote');
+  });
+  
+  test('it can get custom fields for users', async () => {
+    await assertAjax(page, '/custom_fields/table/user');
+  });
+  
+  test('it can get custom values field', async () => {
+    await assertAjax(page, '/custom_values/field');
+  });
+  
+  test('it can get custom values field with id', async () => {
+    await assertAjax(page, '/custom_values/field/1');
+  });
+  
+  test('it can mail an invoice', async () => {
+    await assertAjax(page, '/mailer/invoice/1');
+  });
+  
+  test('it can mail a quote', async () => {
+    await assertAjax(page, '/mailer/quote/1');
+  });
+  
+  test('it can save a file upload', async () => {
+    await assertAjax(page, '/upload/save');
+  });
+});
