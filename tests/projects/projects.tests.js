@@ -1,47 +1,45 @@
-const TestRunner = require('../testrunner');
+const { page, expect } = require('jest-playwright-preset');
+const { assertPageLoads, assertFormSubmit, assertDestroy } = require('../test-helpers');
 
-const tests = {
-  async it_can_view_tasks_index(page, runner) {
-    const route = runner.getRoute('projects', '/tasks/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_projects_index(page, runner) {
-    const route = runner.getRoute('projects', '/projects/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_a_project(page, runner) {
-    const route = runner.getRoute('projects', '/projects/view/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleViewOrIndex(page, { ...route, url });
-  },
-  async it_can_create_a_task(page, runner) {
-    const route = runner.getRoute('projects', '/tasks/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_task(page, runner) {
-    const route = runner.getRoute('projects', '/tasks/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_create_a_project(page, runner) {
-    const route = runner.getRoute('projects', '/projects/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_project(page, runner) {
-    const route = runner.getRoute('projects', '/projects/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_delete_a_task(page, runner) {
-    const route = runner.getRoute('projects', '/tasks/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_delete_a_project(page, runner) {
-    const route = runner.getRoute('projects', '/projects/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  }
-};
+describe('Projects Module', () => {
 
-module.exports = { tests };
+  // Index Routes
+  test('it can view tasks index', async () => {
+    await assertPageLoads(page, '/tasks/index');
+  });
+
+  test('it can view projects index', async () => {
+    await assertPageLoads(page, '/projects/index');
+  });
+
+  // View Routes
+  test('it can view a project profile', async () => {
+    await assertPageLoads(page, '/projects/view/1');
+  });
+  
+  // Form Routes
+  test('it can create a new task', async () => {
+    await assertFormSubmit(page, '/tasks/form', 'projects');
+  });
+
+  test('it can edit an existing task', async () => {
+    await assertFormSubmit(page, '/tasks/form/1', 'projects');
+  });
+  
+  test('it can create a new project', async () => {
+    await assertFormSubmit(page, '/projects/form', 'projects');
+  });
+
+  test('it can edit an existing project', async () => {
+    await assertFormSubmit(page, '/projects/form/1', 'projects');
+  });
+  
+  // Destroy Routes
+  test('it can delete a task', async () => {
+    await assertDestroy(page, '/tasks/delete/1');
+  });
+
+  test('it can delete a project', async () => {
+    await assertDestroy(page, '/projects/delete/1');
+  });
+});
