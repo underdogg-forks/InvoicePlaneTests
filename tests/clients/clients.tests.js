@@ -1,90 +1,80 @@
-const TestRunner = require('../testrunner');
+const { page, expect } = require('jest-playwright-preset');
+const { assertPageLoads, assertFormSubmit, assertDestroy } = require('../test-helpers');
 
-const tests = {
-  async it_can_view_the_clients_index(page, runner) {
-    const route = runner.getRoute('clients', '/clients');
-    await runner.handleViewOrIndex(page, route);
-    expect(await page.locator('.page-title').textContent()).toBe('Clients');
-  },
-  async it_can_view_the_clients_index_via_slash(page, runner) {
-    const route = runner.getRoute('clients', '/clients/index');
-    await runner.handleViewOrIndex(page, route);
-    expect(await page.locator('.page-title').textContent()).toBe('Clients');
-  },
-  async it_can_view_active_clients(page, runner) {
-    const route = runner.getRoute('clients', '/clients/status/active');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_all_clients(page, runner) {
-    const route = runner.getRoute('clients', '/clients/status/all');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_inactive_clients(page, runner) {
-    const route = runner.getRoute('clients', '/clients/status/inactive');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_user_clients(page, runner) {
-    const route = runner.getRoute('clients', '/user_clients/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_a_client_by_id(page, runner) {
-    const route = runner.getRoute('clients', '/clients/view/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleViewOrIndex(page, { ...route, url });
-  },
-  async it_can_view_client_invoices_by_id(page, runner) {
-    const route = runner.getRoute('clients', '/clients/view/{id}/invoices');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleViewOrIndex(page, { ...route, url });
-  },
-  async it_can_view_guest_client_by_id(page, runner) {
-    const route = runner.getRoute('clients', '/guest/view/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleViewOrIndex(page, { ...route, url });
-  },
-  async it_can_view_guest_invoice_by_id(page, runner) {
-    const route = runner.getRoute('clients', '/guest/invoice/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleViewOrIndex(page, { ...route, url });
-  },
-  async it_can_view_guest_quote_by_id(page, runner) {
-    const route = runner.getRoute('clients', '/guest/quote/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleViewOrIndex(page, { ...route, url });
-  },
-  async it_can_create_a_client(page, runner) {
-    const route = runner.getRoute('clients', '/clients/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_client(page, runner) {
-    const route = runner.getRoute('clients', '/clients/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_create_a_user_client(page, runner) {
-    const route = runner.getRoute('clients', '/user_clients/form');
-    await runner.handleForm(page, route);
-  },
-  async it_can_edit_a_user_client(page, runner) {
-    const route = runner.getRoute('clients', '/user_clients/form/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleForm(page, { ...route, url });
-  },
-  async it_can_delete_a_client(page, runner) {
-    const route = runner.getRoute('clients', '/clients/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_remove_a_client(page, runner) {
-    const route = runner.getRoute('clients', '/clients/remove/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_delete_a_user_client(page, runner) {
-    const route = runner.getRoute('clients', '/user_clients/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  }
-};
+describe('Clients Module', () => {
 
-module.exports = { tests };
+  // Index Routes
+  test('it can view clients index page', async () => {
+    await assertPageLoads(page, '/clients/index');
+    await expect(page.locator('.content-title')).toContainText('Clients');
+  });
+
+  test('it can view all clients', async () => {
+    await assertPageLoads(page, '/clients/status/all');
+  });
+
+  test('it can view active clients', async () => {
+    await assertPageLoads(page, '/clients/status/active');
+  });
+
+  test('it can view inactive clients', async () => {
+    await assertPageLoads(page, '/clients/status/inactive');
+  });
+
+  test('it can view user clients index', async () => {
+    await assertPageLoads(page, '/user_clients/index');
+  });
+
+  // View Routes
+  test('it can view a client profile', async () => {
+    await assertPageLoads(page, '/clients/view/1');
+    await expect(page.locator('.content-title')).toContainText('Client Profile');
+  });
+
+  test('it can view client invoices', async () => {
+    await assertPageLoads(page, '/clients/view/1/invoices');
+  });
+
+  test('it can view guest client profile', async () => {
+    await assertPageLoads(page, '/guest/view/1');
+  });
+
+  test('it can view guest invoice', async () => {
+    await assertPageLoads(page, '/guest/invoice/1');
+  });
+
+  test('it can view guest quote', async () => {
+    await assertPageLoads(page, '/guest/quote/1');
+  });
+
+  // Form Routes
+  test('it can create a new client', async () => {
+    await assertFormSubmit(page, '/clients/form', 'client');
+  });
+
+  test('it can edit an existing client', async () => {
+    await assertFormSubmit(page, '/clients/form/1', 'client');
+  });
+
+  test('it can create a new user client', async () => {
+    await assertFormSubmit(page, '/user_clients/form', 'user_clients');
+  });
+
+  test('it can edit a user client', async () => {
+    await assertFormSubmit(page, '/user_clients/form/1', 'user_clients');
+  });
+
+  // Destroy Routes
+  test('it can delete a client', async () => {
+    await assertDestroy(page, '/clients/delete/1');
+  });
+
+  test('it can remove a client', async () => {
+    await assertDestroy(page, '/clients/remove/1');
+  });
+
+  test('it can delete a user client', async () => {
+    await assertDestroy(page, '/user_clients/delete/1');
+  });
+
+});
