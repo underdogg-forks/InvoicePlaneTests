@@ -1,8 +1,7 @@
 /**
- * @fileoverview A comprehensive suite of helper functions for InvoicePlane Jest tests.
+ * A comprehensive suite of helper functions for InvoicePlane Jest tests.
  * This file contains functions for navigating pages, submitting forms with specific payloads,
  * and asserting page content and API responses.
- * @author FREE AI agent in the GitHub Copilot plugin of phpstorm
  */
 
 const { expect } = require('@playwright/test');
