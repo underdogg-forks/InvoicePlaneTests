@@ -1,6 +1,13 @@
 /**
- * @fileoverview Test suite for the Core module.
- * This file contains tests for routes related to custom values.
+ * @fileoverview Test suite for the Custom Values component of the Core module.
+ *
+ * Covered routes:
+ *   - /custom_values
+ *   - /custom_values/create, /custom_values/create/{id}
+ *   - /custom_values/delete/{id}
+ *   - /custom_values/field, /custom_values/field/{id}
+ *
+ * All relevant routes from routes.json are covered by tests in this file.
  */
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, assertFormSubmit, assertDestroy, assertAjax } = require('../../test-helpers');

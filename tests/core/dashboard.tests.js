@@ -1,7 +1,10 @@
 /**
- * @fileoverview Test suite for the Core module.
- * This file contains tests for all `dashboard` routes, including views, forms, and deletions.
- * Payloads are explicitly documented in JSDoc blocks for relevant tests.
+ * @fileoverview Test suite for the Dashboard route of the Core module.
+ *
+ * Covered routes:
+ *   - /dashboard
+ *
+ * All other exotic routes are covered in their respective test files.
  */
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads } = require('../../test-helpers');
