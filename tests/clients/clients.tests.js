@@ -16,7 +16,7 @@
  */
 
 const { page, expect } = require('jest-playwright-preset');
-const { assertPageLoads, submitFormWithPayload, assertDestroy } = require('../../test-helpers');
+const { assertPageLoads, submitFormWithPayload } = require('../../test-helpers');
 
 describe('Clients Module', () => {
 

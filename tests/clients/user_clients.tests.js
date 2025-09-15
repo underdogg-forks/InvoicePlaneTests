@@ -1,4 +1,4 @@
-const { page, expect } = require('jest-playwright-preset');
+const { page } = require('jest-playwright-preset');
 const { assertPageLoads, assertFormSubmit, assertDestroy } = require('../../test-helpers');
 
 describe('User Clients Module', () => {

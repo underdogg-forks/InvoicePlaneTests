@@ -47,10 +47,6 @@ Before running tests, make sure to:
    ```sh
    cp jest.config.js.example jest.config.js
    ```
-3. Ensure you have `jest-playwright-preset` installed:
-   ```sh
-   npm install --save-dev jest-playwright-preset
-   ```
 
 You can then run the test suite with:
 ```sh

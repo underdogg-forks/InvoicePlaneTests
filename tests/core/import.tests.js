@@ -3,7 +3,7 @@
  * This file contains tests for all `import` routes, including views, forms, and deletions.
  * Payloads are explicitly documented in JSDoc blocks for relevant tests.
  */
-const { page, expect } = require('jest-playwright-preset');
+const { page } = require('jest-playwright-preset');
 const { assertPageLoads, assertFormSubmit } = require('../../test-helpers');
 
 describe('Import Module', () => {

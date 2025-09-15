@@ -9,7 +9,7 @@
  *
  * All relevant routes from routes.json are covered by tests in this file.
  */
-const { page, expect } = require('jest-playwright-preset');
+const { page } = require('jest-playwright-preset');
 const { assertPageLoads, assertFormSubmit, assertDestroy, assertAjax } = require('../../test-helpers');
 
 describe('Custom Values Module', () => {

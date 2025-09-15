@@ -3,7 +3,7 @@
  * This file contains tests for all `uploads` routes, including views, forms, and deletions.
  * Payloads are explicitly documented in JSDoc blocks for relevant tests.
  */
-const { page, expect } = require('jest-playwright-preset');
+const { page } = require('jest-playwright-preset');
 const { assertPageLoads, assertAjax } = require('../../test-helpers');
 
 describe('Upload Module', () => {
