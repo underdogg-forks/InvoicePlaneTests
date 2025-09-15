@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Test suite for the Core module.
+ * This file contains tests for routes related to custom values.
+ */
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, assertFormSubmit, assertDestroy, assertAjax } = require('../../test-helpers');
 
