@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Test suite for the Core module.
+ * This file contains tests for routes related to email templates.
+ */
 const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, assertFormSubmit, assertDestroy } = require('../../test-helpers');
 
@@ -6,6 +10,7 @@ describe('Email Templates Module', () => {
   // View Routes
   test('it can view email templates index', async () => {
     await assertPageLoads(page, '/email_templates/index');
+    await expect(page.locator('.content-title')).toContainText('Email Templates');
   });
 
   // Form Routes
