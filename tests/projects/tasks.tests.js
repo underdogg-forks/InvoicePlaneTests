@@ -3,7 +3,7 @@
  * This file contains tests for all `tasks` routes, including views, forms, and deletions.
  */
 const { page, expect } = require('jest-playwright-preset');
-const { assertPageLoads, submitFormWithPayload, assertDestroy } = require('../test-helpers');
+const { assertPageLoads, submitFormWithPayload, assertDestroy } = require('../../test-helpers');
 
 describe('Tasks Component', () => {
   // Routes: /tasks/index
