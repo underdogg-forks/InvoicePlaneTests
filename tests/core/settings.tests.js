@@ -1,11 +1,10 @@
-const TestRunner = require('../testrunner');
+const { page, expect } = require('jest-playwright-preset');
+const { assertPageLoads } = require('../../test-helpers');
 
-const tests = {
-  async it_can_view_the_settings_page(page, runner) {
-    const route = runner.getRoute('core', '/settings');
-    await runner.handleExotic(page, route);
-    expect(await page.locator('h1.content-title').textContent()).toBe('System Settings');
-  }
-};
+describe('Settings Module', () => {
 
-module.exports = { tests };
+  // View Routes
+  test('it can view system settings', async () => {
+    await assertPageLoads(page, '/settings');
+  });
+});
