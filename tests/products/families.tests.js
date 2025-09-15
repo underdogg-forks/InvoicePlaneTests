@@ -1,24 +1,49 @@
+/**
+ * @fileoverview Test suite for the Families component of the Products module.
+ * This file contains tests for all `families` routes.
+ */
 const { page, expect } = require('jest-playwright-preset');
-const { assertPageLoads, assertFormSubmit, assertDestroy } = require('../../test-helpers');
+const { assertPageLoads, submitFormWithPayload, assertDestroy } = require('../../test-helpers');
 
-describe('Families Module', () => {
-
-  // View Routes
-  test('it can view families index', async () => {
+describe('Families Component', () => {
+  // Routes: /families/index
+  test('it can view the product families index', async () => {
     await assertPageLoads(page, '/families/index');
+    await expect(page.locator('.content-title')).toContainText('Families');
   });
 
-  // Form Routes
-  test('it can create a new family', async () => {
-    await assertFormSubmit(page, '/families/form', 'products');
+  /**
+   * @description Test creating a new product family.
+   * @payload
+   * {
+   * "family_name": "$family_name"
+   * }
+   */
+  // Route: /families/form
+  test('it can create a new product family', async () => {
+    const createFamilyPayload = {
+      "family_name": "Test Family"
+    };
+    await submitFormWithPayload(page, '/families/form', 'families', createFamilyPayload);
   });
 
-  test('it can edit an existing family by id', async () => {
-    await assertFormSubmit(page, '/families/form/55', 'products');
+  /**
+   * @description Test editing an existing product family.
+   * @payload
+   * {
+   * "family_name": "$family_name"
+   * }
+   */
+  // Route: /families/form/{id}
+  test('it can edit an existing product family', async () => {
+    const editFamilyPayload = {
+      "family_name": "Edited Family"
+    };
+    await submitFormWithPayload(page, '/families/form/55', 'families', editFamilyPayload);
   });
 
-  // Destroy Routes
-  test('it can delete a family', async () => {
-    await assertDestroy(page, '/families/delete/1');
+  // Route: /families/delete/{id}
+  test('it can delete a product family', async () => {
+    await assertDestroy(page, '/families/delete/55');
   });
 });
