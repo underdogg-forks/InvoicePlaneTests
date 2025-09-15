@@ -1,58 +1,58 @@
-const TestRunner = require('../testrunner');
+const { page, expect } = require('jest-playwright-preset');
+const { assertPageLoads, assertDestroy, assertAjax } = require('../test-helpers');
 
-const tests = {
-  async it_can_view_quotes_index(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/index');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_all_quotes(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/status/all');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_approved_quotes(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/status/approved');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_canceled_quotes(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/status/canceled');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_draft_quotes(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/status/draft');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_rejected_quotes(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/status/rejected');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_sent_quotes(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/status/sent');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_viewed_quotes(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/status/viewed');
-    await runner.handleViewOrIndex(page, route);
-  },
-  async it_can_view_a_quote(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/view/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleViewOrIndex(page, { ...route, url });
-  },
-  async it_can_delete_a_quote(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/delete/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_cancel_a_quote(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/cancel/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleDestroy(page, { ...route, url });
-  },
-  async it_can_generate_a_quote_pdf(page, runner) {
-    const route = runner.getRoute('quotes', '/quotes/generate_pdf/{id}');
-    const url = route.url.replace('{id}', '1');
-    await runner.handleAjax(page, { ...route, url });
-  }
-};
+describe('Quotes Module', () => {
 
-module.exports = { tests };
+  // Index Routes
+  test('it can view quotes index', async () => {
+    await assertPageLoads(page, '/quotes/index');
+    await expect(page.locator('.content-title')).toContainText('Quotes');
+  });
+
+  test('it can view all quotes', async () => {
+    await assertPageLoads(page, '/quotes/status/all');
+  });
+  
+  test('it can view approved quotes', async () => {
+    await assertPageLoads(page, '/quotes/status/approved');
+  });
+  
+  test('it can view canceled quotes', async () => {
+    await assertPageLoads(page, '/quotes/status/canceled');
+  });
+  
+  test('it can view draft quotes', async () => {
+    await assertPageLoads(page, '/quotes/status/draft');
+  });
+  
+  test('it can view rejected quotes', async () => {
+    await assertPageLoads(page, '/quotes/status/rejected');
+  });
+  
+  test('it can view sent quotes', async () => {
+    await assertPageLoads(page, '/quotes/status/sent');
+  });
+  
+  test('it can view viewed quotes', async () => {
+    await assertPageLoads(page, '/quotes/status/viewed');
+  });
+
+  // View Routes
+  test('it can view a quote', async () => {
+    await assertPageLoads(page, '/quotes/view/1');
+  });
+  
+  // Destroy Routes
+  test('it can delete a quote', async () => {
+    await assertDestroy(page, '/quotes/delete/1');
+  });
+
+  test('it can cancel a quote', async () => {
+    await assertDestroy(page, '/quotes/cancel/1');
+  });
+  
+  // AJAX Routes
+  test('it can generate a quote PDF', async () => {
+    await assertAjax(page, '/quotes/generate_pdf/1');
+  });
+});
