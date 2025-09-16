@@ -4,7 +4,7 @@
  * Also handles beforeEach and afterEach for individual tests.
  * Configuration such as baseUrl, login credentials, and logout method are read from config.js.
  */
-const config = require('./config');
+const config = require('../config');
 
 // Set timeout from config (default 10 seconds)
 jest.setTimeout((config.testTimeout || 10) * 1000);
