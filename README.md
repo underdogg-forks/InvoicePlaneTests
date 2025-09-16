@@ -2,6 +2,26 @@
 
 Comprehensive Playwright + Jest test suite for InvoicePlane, an open-source invoicing application.
 
+## Useful new commands:
+
+### Run only create tests across all modules  
+npm run test:create
+
+### Run payment tests only
+npm run test:payments
+
+### Debug with browser visible and slow motion
+npm run test:debug
+
+### Watch your logs in real-time
+npm run logs
+
+### Clean up everything including logs
+npm run clean
+
+### Run tests with 5-second timeout for debugging
+npm run test:timeout
+
 ## Project Description
 
 This repository contains automated browser tests for all major InvoicePlane functionality including:
