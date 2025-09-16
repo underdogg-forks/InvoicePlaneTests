@@ -1,15 +1,25 @@
 module.exports = {
-    testEnvironment: 'jest-playwright-preset',
-    testMatch: ['**/tests/**/*.tests.js'],
-    setupFilesAfterEnv: ['<rootDir>/setup.js'],
-    verbose: true,
-    bail: false,
-    transform: {},
-    globals: {
-        baseUrl: 'http://ivplv1.test',
-    },
-    preset: 'jest-playwright-preset',
-    testRunner: 'jest-circus/runner',
-    reporters: ['default'],
-    moduleFileExtensions: ['js'],
+  testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+  testMatch: [
+    '<rootDir>/tests/**/*.test.js'
+  ],
+  collectCoverageFrom: [
+    'tests/**/*.js',
+    '!tests/setup.js',
+    '!tests/helpers/**',
+    '!tests/fixtures/**'
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html'],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  },
+  verbose: true,
+  testTimeout: 30000
 };
