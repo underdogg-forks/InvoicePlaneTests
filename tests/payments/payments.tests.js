@@ -11,7 +11,7 @@
  * Pending (incomplete) tests for:
  *   - /payments/online_logs (AJAX)
  */
-const { submitFormWithPayload, assertPageLoads, assertDestroy } = require('../test-helpers');
+const { submitFormWithPayload, assertPageLoads, assertDestroy } = require('../../test-helpers');
 
 describe('Payments Module', () => {
     describe('Create Tests', () => {
