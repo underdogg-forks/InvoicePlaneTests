@@ -1,11 +1,12 @@
 /**
  * @fileoverview Setup file for Jest tests using Playwright.
  * This file handles logging in before all tests and logging out after all tests.
+ * Also handles beforeEach and afterEach for individual tests.
  * Configuration such as baseUrl, login credentials, and logout method are read from config.js.
  */
 const config = require('./config');
 
-// Set shorter timeout for debugging (5 seconds instead of 30)
+// Set timeout from config (default 10 seconds)
 jest.setTimeout((config.testTimeout || 10) * 1000);
 
 beforeAll(async () => {
@@ -29,7 +30,7 @@ beforeAll(async () => {
 
         console.log(`Navigating to login: ${config.baseUrl}/sessions/login`);
         await page.goto(`${config.baseUrl}/sessions/login`, {
-            waitUntil: 'domcontentloaded', // Changed from 'load' to be faster
+            waitUntil: 'domcontentloaded',
             timeout: config.timeouts.navigation
         });
 
@@ -74,6 +75,74 @@ beforeAll(async () => {
         console.log('Current URL:', page.url());
         console.log('Page title:', await page.title().catch(() => 'Unknown'));
         throw err;
+    }
+});
+
+// Global beforeEach for all tests
+beforeEach(async () => {
+    try {
+        // Navigate back to dashboard before each test for clean state
+        if (!page.url().includes('/dashboard')) {
+            console.log('Navigating to dashboard before test...');
+            await page.goto(`${config.baseUrl}/dashboard`, {
+                waitUntil: 'domcontentloaded',
+                timeout: config.timeouts.navigation
+            });
+        }
+        
+        // Clear any existing alerts or notifications
+        const alerts = await page.$$('.alert, .notification, .toast');
+        for (const alert of alerts) {
+            const closeBtn = await alert.$('.close, .btn-close, [data-dismiss]');
+            if (closeBtn) {
+                await closeBtn.click().catch(() => {}); // Ignore if fails
+            }
+        }
+        
+        // Log test start
+        const testName = expect.getState().currentTestName || 'Unknown Test';
+        console.log(`\n=== Starting Test: ${testName} ===`);
+        
+    } catch (err) {
+        console.warn('beforeEach setup warning:', err.message);
+        // Don't throw - let test continue
+    }
+});
+
+// Global afterEach for all tests  
+afterEach(async () => {
+    try {
+        const testName = expect.getState().currentTestName || 'Unknown Test';
+        const currentUrl = page.url();
+        
+        console.log(`=== Test Complete: ${testName} ===`);
+        console.log(`Final URL: ${currentUrl}`);
+        
+        // Take screenshot on test failure (if implemented)
+        const testResult = expect.getState();
+        if (testResult.assertionCalls > 0) {
+            // Test had assertions - check if we should take screenshot
+            // This is a placeholder for screenshot logic
+        }
+        
+        // Clean up any open modals or dialogs
+        const modals = await page.$$('.modal, .dialog, [role="dialog"]');
+        for (const modal of modals) {
+            const closeBtn = await modal.$('.close, .btn-close, [data-dismiss="modal"]');
+            if (closeBtn) {
+                await closeBtn.click().catch(() => {});
+            } else {
+                // Try pressing ESC to close modal
+                await page.keyboard.press('Escape').catch(() => {});
+            }
+        }
+        
+        // Log any console errors that occurred during test
+        // (These are captured by the listeners set up in beforeAll)
+        
+    } catch (err) {
+        console.warn('afterEach cleanup warning:', err.message);
+        // Don't throw - test is done anyway
     }
 });
 
