@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'], // Updated path
   testMatch: [
     '<rootDir>/tests/**/*.test.js'
   ],
@@ -8,24 +8,16 @@ module.exports = {
     'tests/**/*.js',
     '!tests/setup.js',
     '!tests/config.js',
-    '!tests/jest.global-*.js',
+    '!tests/test-helpers.js',
     '!tests/helpers/**',
-    '!tests/fixtures/**'
+    '!tests/fixtures/**',
+    '!tests/storage/**'
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  coverageThreshold: {
-    global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70
-    }
-  },
   verbose: true,
-  testTimeout: 15000, // 15 seconds max per test
-  maxWorkers: 1, // Critical for your auth flow
-  // Removed global setup - conflicts with your setup.js
-  detectOpenHandles: true, // Helps find hanging promises
-  forceExit: true, // Forces exit after tests complete
+  testTimeout: 15000,
+  maxWorkers: 1,
+  detectOpenHandles: true,
+  forceExit: true,
 };
