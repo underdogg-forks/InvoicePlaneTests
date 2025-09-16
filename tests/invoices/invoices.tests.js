@@ -15,11 +15,7 @@
  *   - /invoices/recurring/stop/{id}
  *   - /invoices/generate_pdf/{id} (AJAX)
  */
-/**
- * @fileoverview Invoice module tests for InvoicePlane
- * Tests invoice creation, management, and related operations
- */
-const { submitFormWithPayload, assertPageLoads, assertDestroy, assertAjax } = require('../test-helpers');
+const { submitFormWithPayload, assertPageLoads, assertDestroy, assertAjax } = require('../../test-helpers');
 
 describe('Invoices Module', () => {
     describe('Create Tests', () => {
