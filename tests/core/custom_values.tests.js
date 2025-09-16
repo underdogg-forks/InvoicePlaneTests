@@ -9,36 +9,43 @@
  *
  * All relevant routes from routes.json are covered by tests in this file.
  */
-const { page } = require('jest-playwright-preset');
-const { assertPageLoads, assertFormSubmit, assertDestroy, assertAjax } = require('../../test-helpers');
+const {assertPageLoads, assertFormSubmit, assertDestroy, assertAjax} = require('../../test-helpers');
 
 describe('Custom Values Module', () => {
 
-  // View Routes
-  test('it can view custom values index', async () => {
-    await assertPageLoads(page, '/custom_values');
-  });
+    // View Routes
+    test('it can view custom values index', async () => {
+        await assertPageLoads(page, '/custom_values');
+    });
 
-  // Form Routes
-  test('it can create a new custom value', async () => {
-    await assertFormSubmit(page, '/custom_values/create/', 'core');
-  });
+    // Form Routes
+    test('it can create a new custom value', async () => {
+        const payload = {
+            custom_field_id: '171',
+            custom_field_value: 'Test Value ' + Date.now()
+        };
+        await assertFormSubmit(page, '/custom_values/create/', 'core', payload);
+    });
 
-  test('it can create a new custom value for field by id', async () => {
-    await assertFormSubmit(page, '/custom_values/create/171', 'core');
-  });
+    test('it can create a new custom value for field by id', async () => {
+        const payload = {
+            custom_field_id: '171',
+            custom_field_value: 'Test Value ' + Date.now()
+        };
+        await assertFormSubmit(page, '/custom_values/create/171', 'core', payload);
+    });
 
-  // Destroy Routes
-  test('it can delete a custom value', async () => {
-    await assertDestroy(page, '/custom_values/delete/1');
-  });
+    // Destroy Routes
+    test('it can delete a custom value', async () => {
+        await assertDestroy(page, '/custom_values/delete/1');
+    });
 
-  // AJAX Routes
-  test('it can get custom values field without id', async () => {
-    await assertAjax(page, '/custom_values/field/');
-  });
+    // AJAX Routes
+    test('it can get custom values field without id', async () => {
+        await assertAjax(page, '/custom_values/field/');
+    });
 
-  test('it can get custom values field by id', async () => {
-    await assertAjax(page, '/custom_values/field/171');
-  });
+    test('it can get custom values field by id', async () => {
+        await assertAjax(page, '/custom_values/field/171');
+    });
 });

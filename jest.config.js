@@ -6,9 +6,8 @@ module.exports = {
     bail: false,
     transform: {},
     globals: {
-        baseUrl: 'http://localhost.test',
+        baseUrl: 'http://ivplv1.test',
     },
-    testTimeout: 1000,
     preset: 'jest-playwright-preset',
     testRunner: 'jest-circus/runner',
     reporters: ['default'],

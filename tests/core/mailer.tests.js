@@ -3,8 +3,6 @@
  * This file contains tests for all `mailer` routes, including views, forms, and deletions.
  * Payloads are explicitly documented in JSDoc blocks for relevant tests.
  */
-const { page } = require('jest-playwright-preset');
-const { assertAjax } = require('../../test-helpers');
 
 describe('Mailer Module', () => {
 

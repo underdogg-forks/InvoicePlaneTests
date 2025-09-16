@@ -12,7 +12,6 @@
  * Pending (incomplete) tests for:
  *   - /quotes/status/all, /quotes/status/approved, /quotes/status/canceled, /quotes/status/draft, /quotes/status/rejected, /quotes/status/sent, /quotes/status/viewed
  */
-const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax } = require('../../test-helpers');
 
 describe('Quotes Module', () => {

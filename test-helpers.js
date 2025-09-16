@@ -4,10 +4,13 @@
  * and asserting page content and API responses.
  */
 
-const { expect } = require('@playwright/test');
 const config = require('./config');
+const fs = require('fs');
+const path = require('path');
 
 const base = config.baseUrl;
+const logDir = path.join(__dirname, 'storage', 'logs');
+const logFile = path.join(logDir, 'jest.log');
 
 /**
  * Generates a random string to be used for dynamic data.
@@ -32,7 +35,7 @@ function generateRandomString(length = 10) {
  * @param {object} payload - The form data payload from a JSON file.
  * @returns {Promise<void>}
  */
-async function processPayload(page, payload) {
+async function processPayload(page, payload = {}) {
     for (const [key, value] of Object.entries(payload)) {
         let processedValue = value;
 
@@ -89,7 +92,7 @@ async function processPayload(page, payload) {
         const inputLocator = page.locator(`[name="${key}"]`);
         if (await inputLocator.count() > 0) {
             if (await inputLocator.evaluate(el => el.tagName.toLowerCase()) === 'select') {
-                await inputLocator.selectOption({ value: processedValue });
+                await inputLocator.selectOption({value: processedValue});
             } else {
                 await inputLocator.fill(processedValue);
             }
@@ -107,30 +110,38 @@ async function assertPageLoads(page, url) {
     // Arrange: Get the URL
     const fullUrl = base + url;
     // Act: Navigate to the page
-    const response = await page.goto(fullUrl, { waitUntil: 'domcontentloaded' });
+    const response = await page.goto(fullUrl, {waitUntil: 'domcontentloaded'});
     // Assert: The page loaded successfully without authorization or not found errors
-    await expect(page.locator('body')).not.toContainText('Unauthorized');
-    await expect(page.locator('body')).not.toContainText('Page not found');
+    const bodyText = await page.textContent('body');
+    expect(bodyText).not.toContain('Unauthorized');
+    expect(bodyText).not.toContain('Page not found');
 }
 
 /**
  * Submits a form using a specific payload and waits for a success message.
- * This is the main function for 'form' and 'ajax' routes with a payload.
+ * Returns the new record ID if present in the URL after submission.
  * @param {import('playwright').Page} page - The Playwright page object.
  * @param {string} url - The form URL.
  * @param {string} module - The module name for form saving strategy.
  * @param {object} payload - The specific payload to use for form fields.
- * @returns {Promise<void>}
+ * @returns {Promise<string|null>} The new record ID if found, else null.
  */
-async function submitFormWithPayload(page, url, module, payload) {
+async function submitFormWithPayload(page, url, module, payload = {}) {
     // Arrange: Navigate to the form
     const fullUrl = base + url;
-    await page.goto(fullUrl, { waitUntil: 'domcontentloaded' });
+    await page.goto(fullUrl, {waitUntil: 'domcontentloaded'});
     // Act: Process the payload, fill the form, and submit
-    await processPayload(page, payload);
+    await processPayload(page, payload || {});
     await submitForm(page, module);
     // Assert: Check for a success message
-    await assertSuccessMessage(page);
+    await assertSuccessMessage(page, module);
+    // Try to extract the new ID from the URL (e.g., /tax_rates/form/123)
+    const currentUrl = page.url();
+    const match = currentUrl.match(/\/tax_rates\/form\/(\d+)/);
+    if (match) {
+        return match[1];
+    }
+    return null;
 }
 
 /**
@@ -162,27 +173,60 @@ async function submitForm(page, module) {
 /**
  * Asserts that a success message is visible on the page.
  * @param {import('playwright').Page} page - The Playwright page object.
+ * @param {string} module - The module name for context-specific messages.
  * @param {string} message - The success message to check for.
  * @returns {Promise<void>}
  */
-async function assertSuccessMessage(page, message = 'Record saved') {
-    await expect(page.locator('.alert-success')).toContainText(message, { timeout: 10000 });
+async function assertSuccessMessage(page, module = '', message = '') {
+    let expected = message;
+    if (!expected) {
+        if (module === 'tax_rates') {
+            expected = 'Record successfully created';
+        } else {
+            expected = 'Record saved';
+        }
+    }
+    await expect(page.locator('.alert-success')).toContainText(expected, {timeout: 10000});
 }
 
 /**
  * Asserts that a record deletion is successful.
- * This is for 'destroy' routes.
+ * This is for 'destroy' routes (POST only).
  * @param {import('playwright').Page} page - The Playwright page object.
- * @param {string} url - The URL to navigate to for deletion.
+ * @param {string} url - The URL to navigate to for deletion (relative, no base).
  * @returns {Promise<void>}
  */
 async function assertDestroy(page, url) {
-    // Arrange: Get the URL
     const fullUrl = base + url;
-    // Act: Navigate to the delete URL
-    await page.goto(fullUrl);
-    // Assert: Check for the successful deletion message
-    await expect(page.locator('.alert-success')).toContainText('Record was deleted');
+    try {
+        // Visit the page to get CSRF token if needed
+        await page.goto(fullUrl.replace(/\/delete.*/, ''));
+        // Try to get CSRF token from a hidden input
+        let csrfToken = null;
+        const csrfInput = await page.locator('input[name="csrf_token"], input[name="_csrf"]');
+        if (await csrfInput.count() > 0) {
+            csrfToken = await csrfInput.first().inputValue();
+        }
+        // Prepare form data
+        const formData = {};
+        if (csrfToken) {
+            // Use the correct key for your app's CSRF field
+            formData['csrf_token'] = csrfToken;
+        }
+        // POST to the destroy route
+        const response = await page.request.post(fullUrl, {form: formData});
+        if (response.status() === 404) {
+            logToJestLog(`404 Not Found for URL: ${fullUrl}`);
+            throw new Error(`404 Not Found for URL: ${fullUrl}`);
+        }
+        // After POST, reload the page to check for the success message
+        await page.goto(fullUrl.replace(/\/delete.*/, ''));
+        const alertText = await page.textContent('.alert-success');
+        expect(alertText).toContain('Record was deleted');
+    } catch (err) {
+        logToJestLog(`Error in assertDestroy for URL ${fullUrl}: ${err.message}`);
+        throw err;
+    }
 }
 
 /**
@@ -199,10 +243,18 @@ async function assertAjax(page, url) {
     expect(response.status()).toBe(200);
 }
 
+function logToJestLog(message) {
+    if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, {recursive: true});
+    fs.appendFileSync(logFile, `[${new Date().toISOString()}] ${message}\n`);
+}
+
 module.exports = {
     assertPageLoads,
-    submitFormWithPayload,
+    assertFormSubmit: submitFormWithPayload,
     assertDestroy,
     assertAjax,
     assertSuccessMessage,
+    generateRandomString,
+    processPayload,
+    submitFormWithPayload,
 };

@@ -2,7 +2,7 @@
  * @fileoverview Test suite for the Users component of the Core module.
  * This file contains tests for the users and sessions routes.
  */
-const { page, expect } = require('jest-playwright-preset');
+
 const { assertPageLoads, submitFormWithPayload, assertDestroy } = require('../../test-helpers');
 
 describe('Users Component', () => {

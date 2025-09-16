@@ -2,7 +2,6 @@
  * @fileoverview Test suite for the Payment Methods module.
  * This file contains tests for all `payment_methods` routes, including views, forms, and deletions.
  */
-const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads, submitFormWithPayload, assertDestroy } = require('../../test-helpers');
 
 describe('Payment Methods Module', () => {

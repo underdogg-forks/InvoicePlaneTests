@@ -1,20 +1,19 @@
-/**
- * @fileoverview Test suite for the Core module.
- * This file contains tests for all `import` routes, including views, forms, and deletions.
- * Payloads are explicitly documented in JSDoc blocks for relevant tests.
- */
-const { page } = require('jest-playwright-preset');
-const { assertPageLoads, assertFormSubmit } = require('../../test-helpers');
+const {assertPageLoads, assertFormSubmit} = require('../../test-helpers');
 
 describe('Import Module', () => {
+    test('it can view import index', async () => {
+        await assertPageLoads(page, '/import/index');
+    });
 
-  // View Routes
-  test('it can view import page', async () => {
-    await assertPageLoads(page, '/import');
-  });
+    test('it can access import form', async () => {
+        await assertPageLoads(page, '/import/form');
+    });
 
-  // Form Routes
-  test('it can view the import form', async () => {
-    await assertFormSubmit(page, '/import/form', 'core');
-  });
+    // Optionally, add a form submission test if safe
+    test('it can submit import form (dummy payload)', async () => {
+        const payload = {
+            import_file: 'dummy.csv'
+        };
+        await assertFormSubmit(page, '/import/form', 'core', payload);
+    });
 });

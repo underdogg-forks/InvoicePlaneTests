@@ -2,7 +2,6 @@
  * @fileoverview Test suite for the Reports component of the Core module.
  * This file contains tests for all reports routes.
  */
-const { page, expect } = require('jest-playwright-preset');
 const { assertPageLoads } = require('../../test-helpers');
 
 describe('Reports Component', () => {

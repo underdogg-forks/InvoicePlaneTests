@@ -2,7 +2,7 @@
  * @fileoverview Test suite for the Email Templates component of the Core module.
  * This file contains tests for all `email_templates` routes.
  */
-const { page, expect } = require('jest-playwright-preset');
+
 const { assertPageLoads, submitFormWithPayload, assertDestroy } = require('../../test-helpers');
 
 describe('Email Templates Component', () => {
