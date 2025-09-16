@@ -8,6 +8,7 @@ module.exports = {
     'tests/**/*.js',
     '!tests/setup.js',
     '!tests/config.js',
+    '!tests/jest.global-*.js',
     '!tests/helpers/**',
     '!tests/fixtures/**'
   ],
@@ -22,7 +23,9 @@ module.exports = {
     }
   },
   verbose: true,
-  // No testTimeout here since you handle it in setup.js
-  globalSetup: './tests/jest.global-setup.js',
-  globalTeardown: './tests/jest.global-teardown.js'
+  testTimeout: 15000, // 15 seconds max per test
+  maxWorkers: 1, // Critical for your auth flow
+  // Removed global setup - conflicts with your setup.js
+  detectOpenHandles: true, // Helps find hanging promises
+  forceExit: true, // Forces exit after tests complete
 };
