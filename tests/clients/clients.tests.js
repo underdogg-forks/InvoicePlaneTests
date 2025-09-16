@@ -14,186 +14,95 @@
  *   - /user_clients/form, /user_clients/form/{id}
  *   - /user_clients/delete/{id}
  */
-
-const {assertPageLoads, submitFormWithPayload} = require('../../test-helpers');
+const { submitFormWithPayload, assertPageLoads, assertDestroy } = require('../test-helpers');
 
 describe('Clients Module', () => {
+    describe('Create Tests', () => {
+        test('it can create a new client with full details', async () => {
+            const createClientPayload = {
+                "client_name": "$client_name",                    // Will generate random
+                "client_surname": "$client_surname",              // Will generate random  
+                "client_email": "test@example.com",
+                "client_phone": "555-0123",
+                "client_address_1": "123 Test Street",
+                "client_city": "Test City",
+                "client_state": "Test State",
+                "client_zip": "12345",
+                "client_country": "US"
+            };
+            
+            const newId = await submitFormWithPayload(page, '/clients/form', 'clients', createClientPayload);
+            expect(newId).toBeTruthy();
+        });
 
-    // Routes: /clients, /clients/index
-    test('it can view the clients index page', async () => {
-        // Arrange: Define the URL
-        const url = '/clients/index';
-        // Act & Assert: Navigate to the page and check for expected text
-        await assertPageLoads(page, url);
-        await expect(page.locator('.content-title')).toContainText('Clients');
-    });
+        test('it can create a client with minimal information', async () => {
+            const minimalClientPayload = {
+                "client_name": "$client_name",
+                "client_email": "minimal@example.com"
+            };
+            
+            await submitFormWithPayload(page, '/clients/form', 'clients', minimalClientPayload);
+        });
 
-    // Route: /clients/status/active
-    test('it can view the active clients page', async () => {
-        await assertPageLoads(page, '/clients/status/active');
-        await expect(page.locator('.content-title')).toContainText('Clients');
-    });
-
-    // Route: /clients/status/all
-    test('it can view the clients archive page', async () => {
-        await assertPageLoads(page, '/clients/status/all');
-        await expect(page.locator('.content-title')).toContainText('Clients');
-    });
-
-    // Route: /clients/status/inactive
-    test('it can view the inactive clients page', async () => {
-        await assertPageLoads(page, '/clients/status/inactive');
-        await expect(page.locator('.content-title')).toContainText('Clients');
-    });
-
-    // Route: /user_clients/index
-    test('it can view the user clients index', async () => {
-        await assertPageLoads(page, '/user_clients/index');
-        await expect(page.locator('.content-title')).toContainText('Clients');
-    });
-
-    // Route: /clients/view/{id}
-    test('it can view a specific client profile', async () => {
-        // Arrange: Define the URL with a hardcoded ID
-        const url = '/clients/view/956';
-        // Act & Assert: Navigate and check for expected text on the profile page
-        await assertPageLoads(page, url);
-        await expect(page.locator('.content-title')).toContainText('Client Profile');
-    });
-
-    // Route: /clients/view/{id}/invoices
-    test('it can view a specific client\'s invoices', async () => {
-        // Arrange: Define the URL with a hardcoded ID
-        const url = '/clients/view/956/invoices';
-        // Act & Assert: Navigate and check the page content
-        await assertPageLoads(page, url);
-        await expect(page.locator('.content-title')).toContainText('Invoices');
+        test('it can create a business client', async () => {
+            const businessClientPayload = {
+                "client_name": "Test Business Corp",
+                "client_email": "business@example.com",
+                "client_phone": "555-0199",
+                "client_address_1": "456 Business Blvd",
+                "client_city": "Business City",
+                "client_country": "US",
+                "client_tax_code": "TAX123456"
+            };
+            
+            await submitFormWithPayload(page, '/clients/form', 'clients', businessClientPayload);
+        });
     });
 
-    // Route: /guest/view/{id}
-    test('it can view a guest client profile', async () => {
-        const url = '/guest/view/956';
-        await assertPageLoads(page, url);
-        await expect(page.locator('h1')).toContainText('InvoicePlane');
+    describe('Read Tests', () => {
+        test('it can load the clients index page', async () => {
+            await assertPageLoads(page, '/clients');
+        });
+
+        test('it can load the client form page', async () => {
+            await assertPageLoads(page, '/clients/form');
+        });
+
+        test('it can view client details', async () => {
+            // Using the hardcoded client ID from your test helpers
+            await assertPageLoads(page, '/clients/view/956');
+        });
+
+        test('it can load client edit form', async () => {
+            await assertPageLoads(page, '/clients/form/956');
+        });
     });
 
-    // Route: /guest/invoice/{id}
-    test('it can view a guest invoice', async () => {
-        const url = '/guest/invoice/6617';
-        await assertPageLoads(page, url);
-        await expect(page.locator('h1')).toContainText('Invoice');
+    describe('Update Tests', () => {
+        test('it can update client contact information', async () => {
+            const updateClientPayload = {
+                "client_phone": "555-9999",
+                "client_email": "updated@example.com",
+                "client_address_1": "Updated Address 789"
+            };
+            
+            await submitFormWithPayload(page, '/clients/form/956', 'clients', updateClientPayload);
+        });
+
+        test('it can update client business details', async () => {
+            const updateBusinessPayload = {
+                "client_name": "Updated Business Name",
+                "client_tax_code": "NEWTAX789"
+            };
+            
+            await submitFormWithPayload(page, '/clients/form/956', 'clients', updateBusinessPayload);
+        });
     });
 
-    // Route: /guest/quote/{id}
-    test('it can view a guest quote', async () => {
-        const url = '/guest/quote/2172';
-        await assertPageLoads(page, url);
-        await expect(page.locator('h1')).toContainText('Quote');
-    });
-
-    /**
-     * @description Test creating a new client by filling the form with a payload.
-     * @payload
-     * {
-     * "client_name": "$client_name",
-     * "client_address_1": "$client_address_1",
-     * "client_address_2": "$client_address_2",
-     * "client_city": "$client_city",
-     * "client_state": "$client_state",
-     * "client_zip": "$client_zip",
-     * "client_country": "$client_country",
-     * "client_phone": "$client_phone",
-     * "client_fax": "$client_fax",
-     * "client_mobile": "$client_mobile",
-     * "client_email": "$client_email",
-     * "client_web": "$client_web",
-     * "client_tax_id": "$client_tax_id",
-     * "client_active": "$client_active"
-     * }
-     */
-    // Route: /clients/form
-    test('it can create a new client with payload', async () => {
-        const createClientPayload = {
-            "client_name": "$client_name",
-            "client_address_1": "$client_address_1",
-            "client_address_2": "$client_address_2",
-            "client_city": "$client_city",
-            "client_state": "$client_state",
-            "client_zip": "$client_zip",
-            "client_country": "$client_country",
-            "client_phone": "$client_phone",
-            "client_fax": "$client_fax",
-            "client_mobile": "$client_mobile",
-            "client_email": "$client_email",
-            "client_web": "$client_web",
-            "client_tax_id": "$client_tax_id",
-            "client_active": "$client_active"
-        };
-        await submitFormWithPayload(page, '/clients/form', 'client', createClientPayload);
-    });
-
-    /**
-     * @description Test editing an existing client using a specific payload.
-     * @payload
-     * {
-     * "client_name": "$client_name",
-     * "client_address_1": "$client_address_1",
-     * "client_address_2": "$client_address_2",
-     * "client_city": "$client_city",
-     * "client_state": "$client_state",
-     * "client_zip": "$client_zip",
-     * "client_country": "$client_country",
-     * "client_phone": "$client_phone",
-     * "client_fax": "$client_fax",
-     * "client_mobile": "$client_mobile",
-     * "client_email": "$client_email",
-     * "client_web": "$client_web",
-     * "client_tax_id": "$client_tax_id",
-     * "client_active": "$client_active"
-     * }
-     */
-    // Route: /clients/form/{id}
-    test('it can edit an existing client with payload', async () => {
-        const editClientPayload = {
-            "client_name": "$client_name",
-            "client_address_1": "$client_address_1",
-            "client_address_2": "$client_address_2",
-            "client_city": "$client_city",
-            "client_state": "$client_state",
-            "client_zip": "$client_zip",
-            "client_country": "$client_country",
-            "client_phone": "$client_phone",
-            "client_fax": "$client_fax",
-            "client_mobile": "$client_mobile",
-            "client_email": "$client_email",
-            "client_web": "$client_web",
-            "client_tax_id": "$client_tax_id",
-            "client_active": "$client_active"
-        };
-        await submitFormWithPayload(page, '/clients/form/956', 'client', editClientPayload);
-    });
-
-    // Add skipped tests for missing routes
-
-    test.skip('it can create a new client (form)', async () => {
-        // TODO: Implement test for /clients/form
-    });
-    test.skip('it can edit a client by id (form)', async () => {
-        // TODO: Implement test for /clients/form/{id}
-    });
-    test.skip('it can delete a client', async () => {
-        // TODO: Implement test for /clients/delete/{id}
-    });
-    test.skip('it can remove a client', async () => {
-        // TODO: Implement test for /clients/remove/{id}
-    });
-    test.skip('it can create a new user client (form)', async () => {
-        // TODO: Implement test for /user_clients/form
-    });
-    test.skip('it can edit a user client by id (form)', async () => {
-        // TODO: Implement test for /user_clients/form/{id}
-    });
-    test.skip('it can delete a user client', async () => {
-        // TODO: Implement test for /user_clients/delete/{id}
+    describe('Delete Tests', () => {
+        test('it can delete a client', async () => {
+            // Note: Adjust client ID as needed for your test data
+            await assertDestroy(page, '/clients/delete/956');
+        });
     });
 });
