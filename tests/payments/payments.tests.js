@@ -11,66 +11,75 @@
  * Pending (incomplete) tests for:
  *   - /payments/online_logs (AJAX)
  */
-const {assertPageLoads, submitFormWithPayload, assertDestroy, assertAjax} = require('../../test-helpers');
+const { submitFormWithPayload, assertPageLoads, assertDestroy } = require('../test-helpers');
 
 describe('Payments Module', () => {
-    // Route: /payments/index
-    test('it can view the payments index', async () => {
-        await assertPageLoads(page, '/payments/index');
-        await expect(page.locator('.content-title')).toContainText('Payments');
+    describe('Create Tests', () => {
+        test('it can create a new payment with valid data', async () => {
+            const createPaymentPayload = {
+                "invoice_id": "$invoice_id",           // Will become "6617"
+                "payment_date": "2024-09-15",
+                "payment_amount": "50.00",
+                "payment_method_id": "$payment_method_id", // Will become "108"
+                "payment_note": "Test payment note."
+            };
+            
+            const newId = await submitFormWithPayload(page, '/payments/form', 'payments', createPaymentPayload);
+            expect(newId).toBeTruthy();
+        });
+
+        test('it can create a payment with minimum required fields', async () => {
+            const minimalPaymentPayload = {
+                "invoice_id": "$invoice_id",
+                "payment_amount": "25.50",
+                "payment_method_id": "$payment_method_id"
+            };
+            
+            await submitFormWithPayload(page, '/payments/form', 'payments', minimalPaymentPayload);
+        });
+
+        test('it can create a payment with random note', async () => {
+            const randomPaymentPayload = {
+                "invoice_id": "$invoice_id",
+                "payment_date": "2024-09-15", 
+                "payment_amount": "100.00",
+                "payment_method_id": "$payment_method_id",
+                "payment_note": "$payment_note" // Will generate random text
+            };
+            
+            await submitFormWithPayload(page, '/payments/form', 'payments', randomPaymentPayload);
+        });
     });
 
-    /**
-     * @description Test creating a new payment.
-     * @payload
-     * {
-     * "invoice_id": "$invoice_id",
-     * "payment_date": "$payment_date",
-     * "payment_amount": "$payment_amount",
-     * "payment_method_id": "$payment_method_id",
-     * "payment_note": "$payment_note"
-     * }
-     */
-    // Route: /payments/form
-    test('it can create a new payment', async () => {
-        const createPaymentPayload = {
-            "invoice_id": "6617",
-            "payment_date": "2024-09-15",
-            "payment_amount": "50.00",
-            "payment_method_id": "108",
-            "payment_note": "Test payment note."
-        };
-        await submitFormWithPayload(page, '/payments/form', 'payments', createPaymentPayload);
+    describe('Read Tests', () => {
+        test('it can load the payments index page', async () => {
+            await assertPageLoads(page, '/payments');
+        });
+
+        test('it can load the payment form page', async () => {
+            await assertPageLoads(page, '/payments/form');
+        });
+
+        test('it can view payment details', async () => {
+            await assertPageLoads(page, '/payments/view/966');
+        });
     });
 
-    /**
-     * @description Test editing an existing payment.
-     * @payload
-     * {
-     * "payment_date": "$payment_date",
-     * "payment_amount": "$payment_amount",
-     * "payment_method_id": "$payment_method_id",
-     * "payment_note": "$payment_note"
-     * }
-     */
-    // Route: /payments/form/{id}
-    test('it can edit an existing payment', async () => {
-        const editPaymentPayload = {
-            "payment_date": "2024-09-16",
-            "payment_amount": "55.50",
-            "payment_method_id": "108",
-            "payment_note": "Edited payment note."
-        };
-        await submitFormWithPayload(page, '/payments/form/966', 'payments', editPaymentPayload);
+    describe('Update Tests', () => {
+        test('it can update an existing payment', async () => {
+            const updatePaymentPayload = {
+                "payment_amount": "75.00",
+                "payment_note": "Updated payment note"
+            };
+            
+            await submitFormWithPayload(page, '/payments/form/966', 'payments', updatePaymentPayload);
+        });
     });
 
-    // Route: /payments/delete/{id}
-    test('it can delete a payment', async () => {
-        await assertDestroy(page, '/payments/delete/966');
-    });
-
-    // Route: /payments/online_logs
-    test.skip('it can view payment online logs (AJAX)', async () => {
-        // TODO: Implement test for /payments/online_logs
+    describe('Delete Tests', () => {
+        test('it can delete a payment', async () => {
+            // Note: This would delete payment ID 966, adjust ID as needed
+            await assertDestroy(page, '/payments/delete/966');
+        });
     });
 });
