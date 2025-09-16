@@ -15,9 +15,21 @@
         "build": "grunt build",
         "test": "jest --runInBand",
         "test:headed": "jest --runInBand --config=jest.config.headed.js",
-        "test:update": "jest --runInBand --updateSnapshot"
-    },
+        "test:update": "jest --runInBand --updateSnapshot,
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "lint": "eslint tests/",
+    "lint:fix": "eslint tests/ --fix",
+    "format": "prettier --write tests/"
+  },
     "devDependencies": {
+            "eslint": "^8.50.0",
+    "prettier": "^3.0.3",
+    "husky": "^8.0.3",
+    "jest-coverage-badges": "^1.1.2",
+    "@eslint/js": "^9.0.0",
         "@playwright/test": "^1.55.0",
         "autoprefixer": "^10.4.21",
         "bootstrap-datepicker": "1.10",
