@@ -14,7 +14,7 @@
  *   - /user_clients/form, /user_clients/form/{id}
  *   - /user_clients/delete/{id}
  */
-const { submitFormWithPayload, assertPageLoads, assertDestroy } = require('../test-helpers');
+const { submitFormWithPayload, assertPageLoads, assertDestroy } = require('../../test-helpers');
 
 describe('Clients Module', () => {
     describe('Create Tests', () => {
