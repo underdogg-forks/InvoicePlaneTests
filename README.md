@@ -1,10 +1,10 @@
 # InvoicePlane Test Suite
 
-Comprehensive Jest-based test suite for InvoicePlane, an open-source invoicing application.
+Comprehensive Playwright + Jest test suite for InvoicePlane, an open-source invoicing application.
 
 ## Project Description
 
-This repository contains automated tests for all major InvoicePlane functionality including:
+This repository contains automated browser tests for all major InvoicePlane functionality including:
 - Client management
 - Invoice creation and management
 - Payment processing
@@ -17,90 +17,39 @@ This repository contains automated tests for all major InvoicePlane functionalit
 
 - Node.js 18+ 
 - npm or yarn
-- InvoicePlane application running locally or accessible endpoint
+- InvoicePlane application running and accessible
+- Chromium browser (installed automatically with Playwright)
 
 ## Installation
 
 1. Clone the repository:
 ```bash
 git clone https://github.com/nielsdrost7/InvoicePlaneTests.git
-cd InvoicePlaneTestsInstall dependencies:npm installCopy environment configuration:cp .env.example .envUpdate .env with your InvoicePlane instance detailsRunning Tests# Run all tests
+cd InvoicePlaneTestsInstall dependencies:npm installInstall Playwright browsers:npx playwright install chromiumConfigure your test environment in tests/config.jsConfigurationUpdate tests/config.js with your InvoicePlane instance details:Base URLLogin credentialsTimeout settingsLogout configurationRunning Tests# Run all tests (headless)
 npm test
 
-# Run tests in watch mode
-npm run test:watch
+# Run tests with browser visible
+npm run test:headed
+
+# Run tests in debug mode (slow, visible)
+npm run test:debug
 
 # Run tests with coverage report
 npm run test:coverage
 
-# Run tests for CI (no watch, with coverage)
-npm run test:ci
-
 # Run specific test file
 npm test -- clients/clients.test.js
 
-# Run tests matching pattern
-npm test -- --testNamePattern="should create client"Code Quality# Lint all test files
-npm run lint
-
-# Fix linting issues automatically
-npm run lint:fix
-
-# Format code with Prettier
-npm run formatTest Structuretests/
-├── clients/          # Client management tests
-├── core/            # Core functionality tests
-├── invoices/        # Invoice-related tests
-├── payments/        # Payment functionality tests
-├── products/        # Product management tests
-├── projects/        # Project & task tests
-├── quotes/          # Quote functionality tests
-├── helpers/         # Shared test utilities
-├── fixtures/        # Test data
-└── setup.js         # Global test configurationCI/CD IntegrationTests run automatically on:Push to main branchPull requestsScheduled daily runsCoverage reports are generated and badges updated automatically.ContributingPlease read CONTRIBUTING.md for guidelines on:Code style standardsTest writing conventionsPull request processLicense[Add your license here]## CONTRIBUTING.md
-```markdown
-# Contributing to InvoicePlane Test Suite
-
-## Code Style Guidelines
-
-### General Principles
-- Write clear, descriptive test names
-- Use consistent naming conventions
-- Keep tests focused and atomic
-- Follow AAA pattern (Arrange, Act, Assert)
-
-### Test Naming Convention
-```javascript
-describe('Feature/Module Name', () => {
-  describe('when specific condition', () => {
-    it('should perform expected behavior', () => {
-      // test implementation
-    });
-  });
-});
-
-Code FormattingUse ESLint configuration providedFormat code with Prettier before committingUse 2 spaces for indentationUse single quotes for stringsAdd trailing commas in objects and arraysTest Writing StandardsStructuredescribe('User Management', () => {
-  beforeEach(() => {
-    // Setup common test data
-  });
-
-  afterEach(() => {
-    // Cleanup
-  });
-
-  describe('when creating a new user', () => {
-    it('should create user with valid data', async () => {
-      // Arrange
-      const userData = { name: 'John Doe', email: 'john@example.com' };
-      
-      // Act
-      const result = await createUser(userData);
-      
-      // Assert
-      expect(result).toHaveProperty('id');
-      expect(result.name).toBe('John Doe');
-    });
-  });
-});
-
-Best PracticesUse descriptive variable namesMock external dependenciesTest both success and error casesUse factory functions for test dataKeep tests independent and isolatedPull Request ProcessBefore StartingCheck existing issues and PRsCreate an issue for significant changesFork the repositoryDevelopmentCreate a feature branch from mainWrite tests for new functionalityEnsure all tests passRun linting and formattingSubmitting PRWrite clear commit messagesInclude description of changesReference related issuesEnsure CI passesReview ProcessAddress reviewer feedbackKeep PR focused and atomicRebase if necessarySetting Up Development EnvironmentInstall dependencies: npm installInstall git hooks: npx husky installRun tests to verify setup: npm testCheck code quality: npm run lintTesting Commandsnpm test - Run all testsnpm run test:watch - Run in watch modenpm run test:coverage - Generate coverage reportnpm run lint - Check code qualitynpm run format - Format code
+# Run single test in band (no parallel)
+npm test -- --runInBandTest FeaturesAutomatic Authentication: Tests automatically log in before runningSession Management: Proper logout and cleanup after testsError Handling: Robust login failure detectionConfigurable Timeouts: All timeouts managed via configDebug Support: URL logging and error reportingTest Structuretests/
+├── setup.js             # Sacred authentication setup
+├── config.js            # Test configuration
+├── clients/             # Client management tests
+├── core/                # Core functionality tests
+├── invoices/            # Invoice-related tests
+├── payments/            # Payment functionality tests
+├── products/            # Product management tests
+├── projects/            # Project & task tests
+├── quotes/              # Quote functionality tests
+├── helpers/             # Shared test utilities
+└── fixtures/            # Test dataAuthentication FlowThe test suite uses a sophisticated authentication system:Navigates to login pageFills credentials from configSubmits and waits for navigationValidates successful login to dashboardHandles login failures gracefullyLogs out after all tests completeDebuggingWhen tests fail, check:InvoicePlane application is runningLogin credentials in config are correctNetwork connectivity to applicationBrowser console for JavaScript errorsUse npm run test:debug to see tests running in slow motion with browser visible.ContributingPlease read CONTRIBUTING.md for guidelines on:Code style standardsTest writing conventions for PlaywrightPull request process
